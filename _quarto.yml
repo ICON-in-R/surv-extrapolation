@@ -18,11 +18,24 @@ website:
           - index.qmd
           - basics-knitr.qmd
           - basics-jupyter.qmd
-      - section: "Layout"
+      - section: "Distributions"
         contents:
-          - layout.qmd
-          - layout-knitr.qmd
-          - layout-jupyter.qmd
+          - Exponential-distribution.qmd
+          - Weibull-distribution.qmd
+          - Gompertz-distribution.qmd
+      - section: "Assessing the suitability of survival models"
+        contents:
+          - Visual-inspection.qmd
+          - Log-cumulative-hazard-plot.qmd
+          - AIC-BIC-tests.qmd
+          - other-methods.qmd
+      - section: "Methods"
+        contents:
+          - restricted-means.qmd
+          - parametric-modelling.qmd
+          - PH-modelling.qmd
+          - external-data.qmd
+          - other-hybrid-methods.qmd
   page-footer: "Copyright 2022, Nathan Green"
   repo-url: https://github.com/n8thangreen
   repo-actions: [edit, issue]
