@@ -1,0 +1,14 @@
+{
+  "hash": "1b7cec0c7d32038a37cd6918f5360081",
+  "result": {
+    "markdown": "---\ntitle: \"Restricted Means\"\n---\n\n\nRMST\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

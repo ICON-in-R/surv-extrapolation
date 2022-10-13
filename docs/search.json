@@ -12,5 +12,19 @@
     "title": "About",
     "section": "",
     "text": "1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Log-cumulative-hazard-plot.html",
+    "href": "Log-cumulative-hazard-plot.html",
+    "title": "Log Cumulative Hazard Plot",
+    "section": "",
+    "text": "library(survival)\n\ndata(\"reliability\", package = \"survival\")\n\nvdata <- with(valveSeat, data.frame(id=id, time2=time, status=status))\nfirst <- !duplicated(vdata$id)\nvdata$time1 <- ifelse(first, 0, c(0, vdata$time[-nrow(vdata)]))\ndouble <- which(vdata$time1 == vdata$time2)\nvdata$time1[double] <- vdata$time1[double] -.01\nvdata$time2[double-1] <- vdata$time1[double]\nvdata[1:7, c(\"id\", \"time1\", \"time2\", \"status\")]\n\n   id  time1  time2 status\n1 251   0.00 761.00      0\n2 252   0.00 759.00      0\n3 327   0.00  98.00      1\n4 327  98.00 667.00      0\n5 328   0.00 326.00      1\n6 328 326.00 652.99      1\n7 328 652.99 653.00      1\n\nvfit <- survfit(Surv(time1, time2, status) ~1, data=vdata, id=id)\nplot(vfit, cumhaz=TRUE, xlab=\"Days\", ylab=\"Cumulative hazard\")\n\n\n\n\nflexsurv package\n\nHexp(x, rate = 1, log = FALSE)\nHgamma(x, shape, rate = 1, log = FALSE)\nHlnorm(x, meanlog = 0, sdlog = 1, log = FALSE)\nHweibull(x, shape, scale = 1, log = FALSE)\n\n\nlibrary(\"flexsurv\")\nfs1 <- flexsurvreg(Surv(recyrs, censrec) ~ group, data = bc, dist = \"weibull\")\nplot(fs1, type = \"cumhaz\")\n\n\n\n\nmuhaz package"
+  },
+  {
+    "objectID": "restricted-means.html",
+    "href": "restricted-means.html",
+    "title": "Restricted Means",
+    "section": "",
+    "text": "1 + 1\n\n[1] 2"
   }
 ]
