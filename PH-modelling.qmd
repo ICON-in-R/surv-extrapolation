@@ -1,0 +1,12 @@
+---
+title: "Proportional Hazard Modelling"
+---
+
+
+```{r}
+1 + 1
+```
+
+ R package `penalized` for fitting penalised Cox regression models;
+ 
+Goeman, J., Meijer, R. and Chaturvedi, N. (2013) L 1 (lasso and fused lasso) and L 2 (ridge) penalized estimation in GLMs and in the Cox model. R package version 0.9-42

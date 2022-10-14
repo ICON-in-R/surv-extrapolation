@@ -2,8 +2,7 @@
 title: "Log Cumulative Hazard Plot"
 ---
 
-`survival` package
-from https://cran.r-project.org/web/packages/survival/vignettes/survival.pdf
+`survival` package from https://cran.r-project.org/web/packages/survival/vignettes/survival.pdf
 
 ```{r}
 library(survival)
@@ -22,7 +21,6 @@ vfit <- survfit(Surv(time1, time2, status) ~1, data=vdata, id=id)
 plot(vfit, cumhaz=TRUE, xlab="Days", ylab="Cumulative hazard")
 ```
 
-
 `flexsurv` package
 
 ```{r eval=FALSE}
@@ -32,13 +30,12 @@ Hlnorm(x, meanlog = 0, sdlog = 1, log = FALSE)
 Hweibull(x, shape, scale = 1, log = FALSE)
 ```
 
-
 ```{r}
 library("flexsurv")
 fs1 <- flexsurvreg(Surv(recyrs, censrec) ~ group, data = bc, dist = "weibull")
 plot(fs1, type = "cumhaz")
 ```
 
-
 `muhaz` package
 
+survHE::test.linear.assumptions
