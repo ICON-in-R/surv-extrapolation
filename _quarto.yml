@@ -15,18 +15,11 @@ website:
     contents:
       - section: "Basics"
         contents:
-          - index.qmd
-          - basics-knitr.qmd
-          - basics-jupyter.qmd
-      - section: "Distributions"
-        contents:
-          - Exponential-distribution.qmd
-          - Weibull-distribution.qmd
-          - Gompertz-distribution.qmd
+          - intro-to-R.qmd
       - section: "Assessing the suitability of survival models"
         contents:
-          - Visual-inspection.qmd
-          - Log-cumulative-hazard-plot.qmd
+          - basic-visual-inspection.qmd
+          - assess-tranformed-km.qmd
           - AIC-BIC-tests.qmd
           - other-methods.qmd
       - section: "Methods"
@@ -35,6 +28,7 @@ website:
           - parametric-modelling.qmd
           - PH-modelling.qmd
           - external-data.qmd
+          - blended-curves.qmd
           - other-hybrid-methods.qmd
   page-footer: "Copyright 2022, Nathan Green"
   repo-url: https://github.com/n8thangreen
