@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>surv-extrapolation - Log Cumulative Hazard Plot</title>
+<title>surv-extrapolation - Assessing model assumptions using log-cumulative hazard plots</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -117,6 +117,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -127,7 +128,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Log Cumulative Hazard Plot</h1>
+      <h1 class="quarto-secondary-nav-title">Assessing model assumptions using log-cumulative hazard plots</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -238,14 +239,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a></li>
+  <li><a href="#r-examples" id="toc-r-examples" class="nav-link" data-scroll-target="#r-examples">R examples</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/n8thangreen/edit/main/assess-transformed-km.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/n8thangreen/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Log Cumulative Hazard Plot</h1>
+<h1 class="title d-none d-lg-block">Assessing model assumptions using log-cumulative hazard plots</h1>
 </div>
 
 
@@ -259,18 +267,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p><code>survival</code> package from https://cran.r-project.org/web/packages/survival/vignettes/survival.pdf</p>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>Prior to fitting a model based on an assumed parametric form for the hazard function, a preliminary study of the validity of this assumption should be carried-out.</p>
+<p>Let us compare the survivor function for the data with that from a chosen model. To do this we will transform the survivor function to produce a plot that should give a straight line if the assumed model is appropriate.</p>
+<p>For the Weibull, twice taking logs of the survivor function with scale parameter <span class="math inline">\(\lambda\)</span> and shape parameter <span class="math inline">\(\gamma\)</span></p>
+<p><span class="math display">\[
+log(-log S(t)) = log \lambda + \gamma log t
+\]</span></p>
+<p>A plot of <span class="math inline">\(log(-log S(t))\)</span> against <span class="math inline">\(log(t)\)</span> would give an approximately straight line if the Weibull assumption is reasonable. The plot could also be used to give a rough estimate of the parameters.</p>
+<p>Similarly, for the log-logistic distribution</p>
+<p><span class="math display">\[
+log S(t)/(1 - S(t)) = \theta - \kappa log t
+\]</span></p>
+<p>For the log-normal distribution</p>
+<p><span class="math display">\[
+\Phi^{-1} (1 - S(t)) = (log t - \mu) / \sigma
+\]</span> The slope and intercept of this line provide estimates of <span class="math inline">\(\sigma^{-1}\)</span> and <span class="math inline">\(-\mu/\sigma\)</span>, respectively.</p>
+<p>We can also check the assumption made with using the Cox regression model of proportional hazards by inspecting the log-cumulative hazard plot.</p>
+<p><span class="math display">\[
+log H_i(t) = \beta x_i + log H_0(t)
+\]</span></p>
+<p>The transformed curves for different values of the explanatory variables will be parallel if PH holds.</p>
+</section>
+<section id="r-examples" class="level2">
+<h2 class="anchored" data-anchor-id="r-examples">R examples</h2>
+<p>The package commonly used for survival analyses in R is the <code>survival</code> package (https://cran.r-project.org/web/packages/survival/vignettes/survival.pdf). We will begin by repeating an example from the <code>survival</code> help documentation.</p>
+<p>This uses their <code>reliability</code> data. Firstly a little data manipulation is done before we plot the cumulative hazard plot against time using the in-built <code>survival</code> package plotting method with the <code>cumhaz=TRUE</code> argument.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"reliability"</span>, <span class="at">package =</span> <span class="st">"survival"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>vdata <span class="ot">&lt;-</span> <span class="fu">with</span>(valveSeat, <span class="fu">data.frame</span>(<span class="at">id=</span>id, <span class="at">time2=</span>time, <span class="at">status=</span>status))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>vdata <span class="ot">&lt;-</span> <span class="fu">with</span>(valveSeat, <span class="fu">data.frame</span>(<span class="at">id =</span> id, <span class="at">time2 =</span> time, <span class="at">status =</span> status))</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>first <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">duplicated</span>(vdata<span class="sc">$</span>id)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>vdata<span class="sc">$</span>time1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(first, <span class="dv">0</span>, <span class="fu">c</span>(<span class="dv">0</span>, vdata<span class="sc">$</span>time[<span class="sc">-</span><span class="fu">nrow</span>(vdata)]))</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>double <span class="ot">&lt;-</span> <span class="fu">which</span>(vdata<span class="sc">$</span>time1 <span class="sc">==</span> vdata<span class="sc">$</span>time2)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>vdata<span class="sc">$</span>time1[double] <span class="ot">&lt;-</span> vdata<span class="sc">$</span>time1[double] <span class="sc">-</span>.<span class="dv">01</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>vdata<span class="sc">$</span>time2[double<span class="dv">-1</span>] <span class="ot">&lt;-</span> vdata<span class="sc">$</span>time1[double]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>vdata<span class="sc">$</span>time1[double] <span class="ot">&lt;-</span> vdata<span class="sc">$</span>time1[double] <span class="sc">-</span> <span class="fl">0.01</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>vdata<span class="sc">$</span>time2[double <span class="sc">-</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> vdata<span class="sc">$</span>time1[double]</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>vdata[<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>, <span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"time1"</span>, <span class="st">"time2"</span>, <span class="st">"status"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   id  time1  time2 status
@@ -282,31 +316,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 6 328 326.00 652.99      1
 7 328 652.99 653.00      1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vfit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span><span class="dv">1</span>, <span class="at">data=</span>vdata, <span class="at">id=</span>id)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vfit, <span class="at">cumhaz=</span><span class="cn">TRUE</span>, <span class="at">xlab=</span><span class="st">"Days"</span>, <span class="at">ylab=</span><span class="st">"Cumulative hazard"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="Log-cumulative-hazard-plot_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p><code>flexsurv</code> package</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Hexp</span>(x, <span class="at">rate =</span> <span class="dv">1</span>, <span class="at">log =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Hgamma</span>(x, shape, <span class="at">rate =</span> <span class="dv">1</span>, <span class="at">log =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Hlnorm</span>(x, <span class="at">meanlog =</span> <span class="dv">0</span>, <span class="at">sdlog =</span> <span class="dv">1</span>, <span class="at">log =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Hweibull</span>(x, shape, <span class="at">scale =</span> <span class="dv">1</span>, <span class="at">log =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"flexsurv"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fs1 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> group, <span class="at">data =</span> bc, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs1, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">id =</span> id)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">cumhaz =</span> <span class="cn">TRUE</span>, <span class="at">xlab =</span> <span class="st">"Days"</span>, <span class="at">ylab =</span> <span class="st">"Cumulative hazard"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Log-cumulative-hazard-plot_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><code>muhaz</code> package</p>
-<p>survHE::test.linear.assumptions</p>
+<p>We can plot the log-cumulative hazard against log-time by simply plotting the <code>survfit</code> output values directly by specifying the x and y data explicitly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">log</span>(fit<span class="sc">$</span>time), <span class="fu">log</span>(fit<span class="sc">$</span>cumhaz), <span class="at">xlab =</span> <span class="st">"log-Days"</span>, <span class="at">ylab =</span> <span class="st">"Log-cumulative hazard"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For the following we will require the latest development version fo the <code>survHE</code> package. We can obtain this from GitHub with the following.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"giabaio/survHE"</span>, <span class="at">ref =</span> <span class="st">"devel"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Skipping install of 'survHE' from a github remote, the SHA1 (24ef7d17) has not changed since last install.
+  Use `force = TRUE` to force installation</code></pre>
+</div>
+</div>
+<p>Now we can repeat the above analysis. By setting <code>distr = "exp"</code> the cumulative hazard plot is returned.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit_exp <span class="ot">&lt;-</span> survHE<span class="sc">::</span><span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> vdata, <span class="at">distr =</span> <span class="st">"exp"</span>, <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>survHE<span class="sc">:::</span><span class="fu">plot_transformed_km</span>(fit_exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Setting <code>distr = "weibull"</code> then we get the log-cumulative hazard against log-time plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_wei <span class="ot">&lt;-</span> survHE<span class="sc">::</span><span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> vdata, <span class="at">distr =</span> <span class="st">"weibull"</span>, <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>survHE<span class="sc">:::</span><span class="fu">plot_transformed_km</span>(fit_wei)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The <code>plot_transformed_km</code> also provides plots for log-normal and log-logistic distribution assumptions with the corresponding transformation to the survival data.</p>
+<p>Further, we could use the <code>flexsurv</code> package. This package contains lots of functions for a range of survival distributions.</p>
+<p>The cumulative hazard can be plotted with the <code>flexsurv</code> plotting method with argument <code>type = "cumhaz"</code>. The Kaplan-Meier is also overlaid by the model fit.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"flexsurv"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fs1 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"exp"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs1, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fs2 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs2, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
