@@ -1,5 +1,9 @@
 ---
 title: "Assessing model assumptions using log-cumulative hazard plots"
+bibliography: references.bib
+format:
+  html:
+    code-copy: true
 ---
 
 ## Background
@@ -36,9 +40,12 @@ $$
 
 The transformed curves for different values of the explanatory variables will be parallel if PH holds.
 
+See @Collett2013 for more details.
+
+
 ## R examples
 
-The package commonly used for survival analyses in R is the `survival` package (https://cran.r-project.org/web/packages/survival/vignettes/survival.pdf). We will begin by repeating an example from the `survival` help documentation.
+The package commonly used for survival analyses in R is the `survival` package [@TherneauT2021]. We will begin by repeating an example from the `survival` help documentation.
 
 This uses their `reliability` data. Firstly a little data manipulation is done before we plot the cumulative hazard plot against time using the in-built `survival` package plotting method with the `cumhaz=TRUE` argument.
 
@@ -67,13 +74,13 @@ We can plot the log-cumulative hazard against log-time by simply plotting the `s
 plot(log(fit$time), log(fit$cumhaz), xlab = "log-Days", ylab = "Log-cumulative hazard", type = "l")
 ```
 
-For the following we will require the latest development version fo the `survHE` package. We can obtain this from GitHub with the following.
+For the following we will require the latest development version fo the `survHE` package [@Baio2020]. We can obtain this from GitHub with the following.
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 devtools::install_github("giabaio/survHE", ref = "devel")
 ```
 
-Now we can repeat the above analysis. By setting `distr = "exp"` the cumulative hazard plot is returned.
+Now we can repeat the above analysis using the `plot_transformed_km` function. By setting `distr = "exp"` the cumulative hazard plot is returned.
 
 ```{r}
 fit_exp <- survHE::fit.models(Surv(time1, time2, status) ~ 1,
@@ -91,7 +98,167 @@ survHE:::plot_transformed_km(fit_wei)
 
 The `plot_transformed_km` also provides plots for log-normal and log-logistic distribution assumptions with the corresponding transformation to the survival data.
 
-Further, we could use the `flexsurv` package. This package contains lots of functions for a range of survival distributions.
+```{r}
+#| code-fold: true
+#| code-summary: "plot_transformed_km() function"
+
+plot_transformed_km <- function(fit, mod = 1, add_legend = FALSE,
+                                graph = "base", ...) {
+  
+  dots <- list(...)
+  
+  graph <- match.arg(graph, c("base", "ggplot2"))
+  
+  if (length(mod) != 1)
+    stop("Please provide at most one model index.")
+  
+  if (is.numeric(mod) && !mod <= length(fit$models))
+    stop("More model names provided than available in list of model fits provided.")
+  
+  if (is.character(mod) && !mod %in% names(fit$models))
+    stop("Model name not available in list of model fits provided.")
+  
+  dist <- get_distribution(fit, mod)
+  
+  distn_names <- list(
+    "exp" = c("exp", "exponential"),
+    "weibull" = c("weibull", "weibull.quiet", "weibullaf", "weibullph"),
+    "loglogistic" = c("llogis", "loglogistic"),
+    "lognormal" = c("lognormal", "lnorm"),
+    "gompertz" = "gompertz")
+  
+  if (!dist %in% unname(unlist(distn_names)))
+    stop("Distribution not available.")
+  
+  fit_km <- fit$misc$km
+  
+  n_strata <- length(fit_km$strata)
+  
+  if (n_strata == 0 || n_strata == 1) {
+    fit_km$strata <- c("group" = length(fit_km$time))
+  }
+  
+  model_strata <- rep(x = names(fit_km$strata),
+                      times = fit_km$strata)
+  
+  times <- split(fit_km$time, model_strata)
+  survs <- split(fit_km$surv, model_strata)
+  
+  params <- list()
+  
+  if (dist %in% distn_names[["exp"]]) {
+    params <- list(
+      FUN = "lines",
+      xlab = "time",
+      ylab = "-log(S(t))",
+      main = "Exponential distributional assumption",
+      x = times,
+      y = lapply(survs, function(x) -log(x)),
+      lty = 1:n_strata,
+      col = 1:n_strata,
+      type = "l")
+  }
+  
+  if (dist %in% distn_names[["weibull"]]) {
+    params <- list(
+      FUN = "lines",
+      xlab = "log(time)",
+      ylab = "log(-log(S(t))) i.e. log cumulative hazard",
+      main = "Weibull distributional assumption",
+      x = lapply(times, log),
+      y = lapply(survs, function(x) log(-log(x))),
+      lty = 1:n_strata,
+      col = 1:n_strata,
+      type = "l")
+  }
+  
+  if (dist %in% distn_names[["loglogistic"]]) {
+    params <- list(
+      FUN = "lines",
+      xlab = "time",
+      ylab = "log(S(t)/(1-S(t)))",
+      main = "log-Logistic distributional assumption",
+      x = lapply(times, log),
+      y = lapply(survs, function(x) log(x/(1 - x))),
+      lty = 1:n_strata,
+      col = 1:n_strata,
+      type = "l")
+  }
+  
+  if (dist %in% distn_names[["lognormal"]]) {
+    params <- list(
+      FUN = "lines",
+      xlab = "log(time)",
+      ylab = expression(Phi^-1 ~ (1 - S(t))),
+      main = "Log-normal distributional assumption",
+      x = lapply(times, log),
+      y = lapply(survs, function(x) qnorm(1 - x)),
+      lty = 1:n_strata,
+      col = 1:n_strata,
+      type = "l")
+  }
+  
+  default_pars <- list(
+    x = NULL,
+    type = "n",
+    axes = FALSE,
+    xlab = params$xlab,
+    ylab = params$ylab,
+    main = params$main,
+    xlim = range(pretty(unlist(params$x))),
+    ylim = range(pretty(unlist(params$y))))
+  
+  setup_pars <- modifyList(
+    default_pars, dots[names(default_pars)])
+  
+  if (graph == "base") {
+    
+    # empty plot
+    do.call(plot, setup_pars)
+    
+    axis(1); axis(2)
+    
+    # plot lines
+    do.call(mapply, modifyList(params, dots))
+    
+    if (isTRUE(add_legend)) {
+      legend("topright", names(survs), col = params$col,
+             lty = params$lty, bty = "n")
+    }
+  }
+  
+  if (graph == "ggplot2") {
+    
+    if (!add_legend) {
+      pos.legend <- "none"
+    } else {
+      pos.legend <- "right"}
+    
+    ggdata <- 
+      data.frame(time = unlist(params$x),
+                 y = unlist(params$y)) |>
+      tibble::rownames_to_column("Group") |> 
+      mutate(Group = gsub("\\d+", "", Group))
+    
+    p <- 
+      ggplot(ggdata, aes(x = .data$time, y = .data$y,
+                         group = .data$Group, col = .data$Group)) +
+      geom_line() +
+      do.call(labs,
+              list(title = setup_pars$main,
+                   x = setup_pars$xlab,
+                   y = setup_pars$ylab)) +
+      theme_bw() +
+      theme(legend.position = pos.legend)
+    
+    print(p)
+  }
+  
+  invisible(params)
+}
+```
+
+Further, we could use the `flexsurv` package [@Jackson2016]. This package contains lots of functions for a range of survival distributions.
 
 The cumulative hazard can be plotted with the `flexsurv` plotting method with argument `type = "cumhaz"`. The Kaplan-Meier is also overlaid by the model fit.
 
