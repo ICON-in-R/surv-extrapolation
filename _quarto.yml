@@ -19,7 +19,7 @@ website:
       - section: "Assessing the suitability of survival models"
         contents:
           - basic-visual-inspection.qmd
-          - assess-tranformed-km.qmd
+          - assess-transformed-km.qmd
           - AIC-BIC-tests.qmd
           - other-methods.qmd
       - section: "Methods"

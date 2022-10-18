@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "AIC-BIC tests"
 ---
 
 About this site
