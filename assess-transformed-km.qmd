@@ -42,7 +42,6 @@ The transformed curves for different values of the explanatory variables will be
 
 See @Collett2013 for more details.
 
-
 ## R examples
 
 The package commonly used for survival analyses in R is the `survival` package [@TherneauT2021]. We will begin by repeating an example from the `survival` help documentation.

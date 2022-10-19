@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -117,6 +136,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -240,7 +260,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#gelber-method" id="toc-gelber-method" class="nav-link active" data-scroll-target="#gelber-method">Gelber method</a>
+  <ul class="collapse">
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a></li>
+  <li><a href="#r-examples" id="toc-r-examples" class="nav-link" data-scroll-target="#r-examples">R Examples</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/n8thangreen/edit/main/other-hybrid-methods.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/n8thangreen/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -261,17 +291,130 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>About this site</p>
+<section id="gelber-method" class="level1">
+<h1>Gelber method</h1>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>A method similar to that developed by LRIG involved fitting an appropriate model to the tail of the Kaplan Meier curve and using the estimated model combined with the Kaplan Meier to produce an estimate of total mean survival. <span class="citation" data-cites="Gelber1993">(<a href="#ref-Gelber1993" role="doc-biblioref">Gelber, Goldhirsch, and Cole 1993</a>)</span> state that this method is of particular use when it is easier to fit an appropriate parametric model to the tail of a Kaplan Meier rather than to the Kaplan Meier as a whole. In the method proposed by <span class="citation" data-cites="Gelber1993">(<a href="#ref-Gelber1993" role="doc-biblioref">Gelber, Goldhirsch, and Cole 1993</a>)</span> log-cumulative hazard probability plots are used to determine the appropriate parametric model and to determine the appropriate values for the point at which the parametric curve takes over from the Kaplan Meier. Both the Gelber method and the LRIG Exponential method are likely to be sensitive to the point at which the parametric model takes over from the Kaplan Meier, <span class="math inline">\(s_0\)</span>, and therefore if either of these methods are used it is important to provide clear rationale for the switch point using statistical analysis.</p>
+<p><span class="math display">\[
+\hat{S}(t) = \hat{S}_{KM}(s_0) S^*(t)/S^*(s_0) \mbox{ for } t &gt; s_0
+\]</span></p>
+<p>This formulation from the original paper takes a combined (product) survival of the Kaplan-Meier and parametric curve after time <span class="math inline">\(s_0\)</span>. In the following we will estimate a single extrapolated curve instead for simplicity.</p>
+</section>
+<section id="r-examples" class="level2">
+<h2 class="anchored" data-anchor-id="r-examples">R Examples</h2>
+<p>We will use the <code>ovarian</code> data set from the <code>flexsurv</code> package. First, let us show how to get the KM and parametric fit using the total data set.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flexsurv)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># survival data</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># kaplan-meier before cut point</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>fitg <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(futime, fustat) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> ovarian, <span class="at">dist =</span> <span class="st">"gompertz"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fitg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now, let us pick an arbitrary cut point at time 100 and find the KM probability of survival at that time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit_km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(futime, fustat) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> ovarian)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>t_cutpt <span class="ot">&lt;-</span> <span class="dv">400</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>p_cutpt <span class="ot">&lt;-</span> <span class="fu">min</span>(fit_km<span class="sc">$</span>surv[fit_km<span class="sc">$</span>time <span class="sc">&lt;</span> t_cutpt])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We wish to fit the parametric curve to the data after the cut point so remove the data before this time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mutate</span>(ovarian, <span class="at">cutpt =</span> futime <span class="sc">&lt;</span> t_cutpt)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">split</span>(data, <span class="at">f =</span> data<span class="sc">$</span>cutpt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and fit the curve, in this case a gompertz,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fitcp <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(futime <span class="sc">-</span> t_cutpt, fustat) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> data<span class="sc">$</span><span class="st">`</span><span class="at">FALSE</span><span class="st">`</span>, <span class="at">dist =</span> <span class="st">"gompertz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>It just remains to summarise the fitted curve and plot it with the KM.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>summ <span class="ot">&lt;-</span> <span class="fu">summary</span>(fitcp, <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1200</span>, <span class="dv">10</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_km)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="at">x =</span> summ[[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> summ[[<span class="dv">1</span>]][[<span class="st">"est"</span>]]<span class="sc">*</span>p_cutpt,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For convenience, we have written a package to do all of these steps called <code>gelber_hybrid_curve</code>.</p>
+<div class="cell">
+<details>
+<summary>plot_transformed_km() function</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>gelber_hybrid_curve <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">formula =</span>  <span class="fu">Surv</span>(futime, fustat) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">data =</span> ovarian,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">dist =</span> <span class="st">"weibull"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">t_cutpt =</span> <span class="dv">100</span>, ...) {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># kaplan-meier before cut point</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  fit_km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="at">formula =</span> formula, <span class="at">data =</span> data)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(fit_km, ...)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  xylims <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="st">"usr"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  data_cutpt <span class="ot">&lt;-</span> fitcp <span class="ot">&lt;-</span> summ <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># what is S_hat at cut point?</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(t_cutpt)) {</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    p_cutpt[i] <span class="ot">&lt;-</span> <span class="fu">min</span>(fit_km<span class="sc">$</span>surv[fit_km<span class="sc">$</span>time <span class="sc">&lt;</span> t_cutpt[i]])</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    data_cutpt[[i]] <span class="ot">&lt;-</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      data <span class="sc">|&gt;</span> </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(futime <span class="sc">&gt;=</span> t_cutpt[i]) <span class="sc">|&gt;</span> </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">futime =</span> futime <span class="sc">-</span> t_cutpt[i])</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># parametric curve after cut point</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    fitcp[[i]] <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> formula,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> data_cutpt[[i]],</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dist =</span> dist)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    summ[[i]] <span class="ot">&lt;-</span> <span class="fu">summary</span>(fitcp[[i]], <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, xylims[<span class="dv">2</span>], <span class="dv">10</span>))</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"est"</span>]]<span class="sc">*</span>p_cutpt[i],</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This can be used to explore the effect of using different cut points and different distributions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gelber_hybrid_curve</span>(<span class="at">t_cutpt =</span> <span class="dv">400</span>, <span class="at">dist =</span> <span class="st">"exp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gelber_hybrid_curve</span>(<span class="at">t_cutpt =</span> <span class="dv">400</span>, <span class="at">dist =</span> <span class="st">"lognormal"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gelber_hybrid_curve</span>(<span class="at">t_cutpt =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">400</span>, <span class="dv">600</span>), <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gelber_hybrid_curve</span>(<span class="at">t_cutpt =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">400</span>, <span class="dv">600</span>), <span class="at">dist =</span> <span class="st">"lognormal"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-7-4.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
 
-</main> <!-- /main -->
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Gelber1993" class="csl-entry" role="doc-biblioentry">
+Gelber, Richard D., Aron Goldhirsch, and Bernard F. Cole. 1993. <span>“<span class="nocase">Parametric extrapolation of survival estimates with applications to quality of life evaluation of treatments</span>.”</span> <em>Control. Clin. Trials</em> 14 (6): 485–99. <a href="https://doi.org/10.1016/0197-2456(93)90029-D">https://doi.org/10.1016/0197-2456(93)90029-D</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
