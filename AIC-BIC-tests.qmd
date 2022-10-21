@@ -15,7 +15,7 @@ Akaike's Information Criterion (AIC) and the Bayesian Information Criterion (BIC
 Suppose that we have a statistical model of some data. Let $k$ be the number of estimated parameters in the model. Let $\hat{L}$ be the maximized value of the likelihood function for the model. Then the AIC value of the model is the following.
 
 $$
-AIC = 2k - 2 \ln({\hat {L}})
+AIC = 2k - 2 \ln({\hat{L}})
 $$
 
 Given a set of candidate models for the data, the preferred model is the one with the minimum AIC value.
@@ -23,34 +23,95 @@ Given a set of candidate models for the data, the preferred model is the one wit
 The BIC is formally defined as
 
 $$
-BIC = k \ln(n) - 2 \ln({\widehat {L}})
+BIC = k \ln(n) - 2 \ln(\widehat{L})
 $$
 
 where
 
-$\hat{L}$ = the maximized value of the likelihood function of the model $M$, i.e. $\hat{L} = p(x \mid \widehat{\theta}, M)$, where $\widehat{\theta }$ are the parameter values that maximize the likelihood function;
+$\hat{L}$ = the maximized value of the likelihood function of the model $M$, i.e. $\hat{L} = p(x \mid \widehat{\theta}, M)$, where $\widehat{\theta}$ are the parameter values that maximize the likelihood function;
 $x$ = the observed data;
 $n$ = the number of data points in $x$, the number of observations, or equivalently, the sample size;
-$k$ = the number of parameters estimated by the model. For example, in multiple linear regression, the estimated parameters are the intercept, the $q$ slope parameters, and the constant variance of the errors; thus, $k=q+2$.
-
+$k$ = the number of parameters estimated by the model. For example, in multiple linear regression, the estimated parameters are the intercept, the $q$ slope parameters, and the constant variance of the errors; thus, $k = q + 2$.
 
 ## R example
 
 Cox proportional hazard model
 
-```{r}
-coxph()
+```{r warning=FALSE, message=FALSE}
+library(survival)
 
-AIC()
-extractAIC()
+test1 <- list(time=c(4,3,1,1,2,2,3), 
+              status=c(1,1,1,0,1,1,0), 
+              x=c(0,2,1,1,1,0,0), 
+              sex=c(0,0,0,0,1,1,1)) 
+# Fit a stratified model 
+fit_ph <- coxph(Surv(time, status) ~ x + strata(sex), test1) 
 
-BIC()
+AIC(fit_ph)
+
+##TODO: what this difference with AIC()?
+extractAIC(fit_ph)
+
+BIC(fit_ph)
 ```
 
-In a Bayesian model
+### Parametric model with `flexsurv`
+
+The package `flexsurv` computes the AIC when it fits a model. This can be accessed by `.$AIC$ i.e.
+
+```{r warning=FALSE, message=FALSE}
+library(flexsurv)
+
+fitg <- flexsurvreg(formula = Surv(futime, fustat) ~ 1, data = ovarian, dist = "gengamma")
+fitg$AIC
+```
+
+For other information criteria statistics it is straightforward to calculate these using the `flexsurvreg` outpuu. For simplicity we can write a function to do them all at the same time, which we shall call `fitstats.flexsurvreg`.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "plot_transformed_km() function"
+
+# helper function
+# from flexsurv github
+# https://github.com/chjackson/flexsurv-dev/issues/44
+fitstats.flexsurvreg = function(x){
+  ll = x$loglik
+  aic = x$AIC
+  k = length(x$coefficients)
+  n = sum(x$data$m["(weights)"])
+  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic = - 2 * ll + (k * log(n))
+  data.frame(
+   Df = k,
+    "n2ll" = -2 * ll,
+    AIC = aic,
+    AICc = aicc,
+    BIC = bic
+  )
+}
+```
+
+Now if we run this we obtain all of the statistics for the previous generalised gamma model fit.
+
+```{r}
+fitstats.flexsurvreg(fitg)
+```
+
+In a Bayesian model with `survHE` package.
+
+```{r warning=FALSE, message=FALSE}
 library(survHE)
 
-survHE:::compute_ICs_stan()
+data(bc)
+
+# Fits the same model using the 3 inference methods
+mle <- fit.models(formula = Surv(recyrs,censrec) ~ group,
+                  data = bc,
+                  distr = "exp",
+                  method = "mle")
+
+mle$model.fitting
+
+# survHE:::compute_ICs_stan()
 ```

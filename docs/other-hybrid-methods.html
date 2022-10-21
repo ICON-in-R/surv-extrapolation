@@ -205,7 +205,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./AIC-BIC-tests.html" class="sidebar-item-text sidebar-link">AIC-BIC tests</a>
+  <a href="./AIC-BIC-tests.html" class="sidebar-item-text sidebar-link">AIC/BIC tests</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -298,8 +298,7 @@ div.csl-indent {
 <p>A method similar to that developed by LRIG involved fitting an appropriate model to the tail of the Kaplan Meier curve and using the estimated model combined with the Kaplan Meier to produce an estimate of total mean survival. <span class="citation" data-cites="Gelber1993">(<a href="#ref-Gelber1993" role="doc-biblioref">Gelber, Goldhirsch, and Cole 1993</a>)</span> state that this method is of particular use when it is easier to fit an appropriate parametric model to the tail of a Kaplan Meier rather than to the Kaplan Meier as a whole. In the method proposed by <span class="citation" data-cites="Gelber1993">(<a href="#ref-Gelber1993" role="doc-biblioref">Gelber, Goldhirsch, and Cole 1993</a>)</span> log-cumulative hazard probability plots are used to determine the appropriate parametric model and to determine the appropriate values for the point at which the parametric curve takes over from the Kaplan Meier. Both the Gelber method and the LRIG Exponential method are likely to be sensitive to the point at which the parametric model takes over from the Kaplan Meier, <span class="math inline">\(s_0\)</span>, and therefore if either of these methods are used it is important to provide clear rationale for the switch point using statistical analysis.</p>
 <p><span class="math display">\[
 \hat{S}(t) = \hat{S}_{KM}(s_0) S^*(t)/S^*(s_0) \mbox{ for } t &gt; s_0
-\]</span></p>
-<p>This formulation from the original paper takes a combined (product) survival of the Kaplan-Meier and parametric curve after time <span class="math inline">\(s_0\)</span>. In the following we will estimate a single extrapolated curve instead for simplicity.</p>
+\]</span> This formulation from the original paper takes a combined (product) survival of the Kaplan-Meier and parametric curve after time <span class="math inline">\(s_0\)</span>. In the following we will estimate a single extrapolated curve instead for simplicity.</p>
 </section>
 <section id="r-examples" class="level2">
 <h2 class="anchored" data-anchor-id="r-examples">R Examples</h2>
@@ -338,14 +337,17 @@ div.csl-indent {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>summ <span class="ot">&lt;-</span> <span class="fu">summary</span>(fitcp, <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1200</span>, <span class="dv">10</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_km)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="at">x =</span> summ[[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> summ[[<span class="dv">1</span>]][[<span class="st">"est"</span>]]<span class="sc">*</span>p_cutpt,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>S_cp <span class="ot">&lt;-</span> summ[[<span class="dv">1</span>]]<span class="sc">$</span>est[summ[[<span class="dv">1</span>]]<span class="sc">$</span>time <span class="sc">==</span> <span class="dv">400</span>]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_km)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="at">x =</span> summ[[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> summ[[<span class="dv">1</span>]][[<span class="st">"est"</span>]]<span class="sc">*</span>p_cutpt,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="other-hybrid-methods_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Notice that <code>p_cutpt</code> is the KM survival probability at the cut point <span class="math inline">\(\hat{S}_{KM}(s_0)\)</span>.</p>
 <p>For convenience, we have written a package to do all of these steps called <code>gelber_hybrid_curve</code>.</p>
 <div class="cell">
 <details>
