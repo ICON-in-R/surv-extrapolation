@@ -362,27 +362,52 @@ div.csl-indent {
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  data_cutpt <span class="ot">&lt;-</span> fitcp <span class="ot">&lt;-</span> summ <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># what is S_hat at cut point?</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(t_cutpt)) {</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    p_cutpt[i] <span class="ot">&lt;-</span> <span class="fu">min</span>(fit_km<span class="sc">$</span>surv[fit_km<span class="sc">$</span>time <span class="sc">&lt;</span> t_cutpt[i]])</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    data_cutpt[[i]] <span class="ot">&lt;-</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      data <span class="sc">|&gt;</span> </span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(futime <span class="sc">&gt;=</span> t_cutpt[i]) <span class="sc">|&gt;</span> </span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">futime =</span> futime <span class="sc">-</span> t_cutpt[i])</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># parametric curve after cut point</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    fitcp[[i]] <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> formula,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> data_cutpt[[i]],</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dist =</span> dist)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    summ[[i]] <span class="ot">&lt;-</span> <span class="fu">summary</span>(fitcp[[i]], <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, xylims[<span class="dv">2</span>], <span class="dv">10</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(t_cutpt)) {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># what is S_hat at cut point?</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    p_cutpt[i] <span class="ot">&lt;-</span> <span class="fu">min</span>(fit_km<span class="sc">$</span>surv[fit_km<span class="sc">$</span>time <span class="sc">&lt;</span> t_cutpt[i]])</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    ucl_cutpt <span class="ot">&lt;-</span> <span class="fu">min</span>(fit_km<span class="sc">$</span>upper[fit_km<span class="sc">$</span>time <span class="sc">&lt;</span> t_cutpt[i]])</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    lcl_cutpt <span class="ot">&lt;-</span> <span class="fu">min</span>(fit_km<span class="sc">$</span>lower[fit_km<span class="sc">$</span>time <span class="sc">&lt;</span> t_cutpt[i]])</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    u95_km <span class="ot">&lt;-</span> ucl_cutpt[i] <span class="sc">-</span> p_cutpt</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    l95_km <span class="ot">&lt;-</span> p_cutpt[i] <span class="sc">-</span> lcl_cutpt</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    data_cutpt[[i]] <span class="ot">&lt;-</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>      data <span class="sc">|&gt;</span> </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(futime <span class="sc">&gt;=</span> t_cutpt[i]) <span class="sc">|&gt;</span> </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">futime =</span> futime <span class="sc">-</span> t_cutpt[i])</span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"est"</span>]]<span class="sc">*</span>p_cutpt[i],</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># parametric curve after cut point</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    fitcp[[i]] <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> formula,</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> data_cutpt[[i]],</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dist =</span> dist)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    summ[[i]] <span class="ot">&lt;-</span> <span class="fu">summary</span>(fitcp[[i]], <span class="at">t =</span> <span class="fu">seq</span>(<span class="dv">0</span>, xylims[<span class="dv">2</span>], <span class="dv">10</span>))</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"est"</span>]]<span class="sc">*</span>p_cutpt[i],</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(t_cutpt) <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">pmax</span>(<span class="dv">0</span>, summ[[i]][[<span class="dv">1</span>]][[<span class="st">"lcl"</span>]]<span class="sc">*</span>p_cutpt[i] <span class="sc">-</span> l95_km),</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">pmax</span>(<span class="dv">0</span>, summ[[i]][[<span class="dv">1</span>]][[<span class="st">"lcl"</span>]]<span class="sc">*</span>p_cutpt[i]),</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">pmin</span>(<span class="dv">1</span>, summ[[i]][[<span class="dv">1</span>]][[<span class="st">"ucl"</span>]]<span class="sc">*</span>p_cutpt[i] <span class="sc">+</span> u95_km),</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lines</span>(<span class="at">x =</span> summ[[i]][[<span class="dv">1</span>]][[<span class="st">"time"</span>]] <span class="sc">+</span> t_cutpt[i],</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">pmin</span>(<span class="dv">1</span>, summ[[i]][[<span class="dv">1</span>]][[<span class="st">"ucl"</span>]]<span class="sc">*</span>p_cutpt[i]),</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>This can be used to explore the effect of using different cut points and different distributions.</p>

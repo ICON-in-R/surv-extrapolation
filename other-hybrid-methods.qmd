@@ -4,6 +4,8 @@ bibliography: references.bib
 format:
   html:
     code-copy: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 # Gelber method
@@ -74,7 +76,6 @@ For convenience, we have written a package to do all of these steps called `gelb
 ```{r}
 #| code-fold: true
 #| code-summary: "plot_transformed_km() function"
-#| 
 
 gelber_hybrid_curve <- function(formula =  Surv(futime, fustat) ~ 1,
                                 data = ovarian,
@@ -88,9 +89,16 @@ gelber_hybrid_curve <- function(formula =  Surv(futime, fustat) ~ 1,
   
   data_cutpt <- fitcp <- summ <- list()
   
-  # what is S_hat at cut point?
   for (i in seq_along(t_cutpt)) {
+    
+    # what is S_hat at cut point?
     p_cutpt[i] <- min(fit_km$surv[fit_km$time < t_cutpt[i]])
+    
+    ucl_cutpt <- min(fit_km$upper[fit_km$time < t_cutpt[i]])
+    lcl_cutpt <- min(fit_km$lower[fit_km$time < t_cutpt[i]])
+    
+    u95_km <- ucl_cutpt[i] - p_cutpt
+    l95_km <- p_cutpt[i] - lcl_cutpt
     
     data_cutpt[[i]] <-
       data |> 
@@ -107,6 +115,24 @@ gelber_hybrid_curve <- function(formula =  Surv(futime, fustat) ~ 1,
     lines(x = summ[[i]][[1]][["time"]] + t_cutpt[i],
           y = summ[[i]][[1]][["est"]]*p_cutpt[i],
           type = "l", col = "red", lwd = 2)
+    
+    if (length(t_cutpt) == 1) {
+      lines(x = summ[[i]][[1]][["time"]] + t_cutpt[i],
+            y = pmax(0, summ[[i]][[1]][["lcl"]]*p_cutpt[i] - l95_km),
+            type = "l", col = "red", lty = 2)
+      
+      lines(x = summ[[i]][[1]][["time"]] + t_cutpt[i],
+            y = pmax(0, summ[[i]][[1]][["lcl"]]*p_cutpt[i]),
+            type = "l", col = "red", lty = 3)
+      
+      lines(x = summ[[i]][[1]][["time"]] + t_cutpt[i],
+            y = pmin(1, summ[[i]][[1]][["ucl"]]*p_cutpt[i] + u95_km),
+            type = "l", col = "red", lty = 2)
+      
+      lines(x = summ[[i]][[1]][["time"]] + t_cutpt[i],
+            y = pmin(1, summ[[i]][[1]][["ucl"]]*p_cutpt[i]),
+            type = "l", col = "red", lty = 3)
+    }
   }
 }
 ```
