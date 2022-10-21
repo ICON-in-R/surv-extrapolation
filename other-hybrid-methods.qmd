@@ -14,14 +14,11 @@ A method similar to that developed by LRIG involved fitting an appropriate model
 
 $$
 \hat{S}(t) = \hat{S}_{KM}(s_0) S^*(t)/S^*(s_0) \mbox{ for } t > s_0
-$$
-This formulation from the original paper takes a combined (product) survival of the Kaplan-Meier and parametric curve after time $s_0$.
-In the following we will estimate a single extrapolated curve instead for simplicity.
+$$ This formulation from the original paper takes a combined (product) survival of the Kaplan-Meier and parametric curve after time $s_0$. In the following we will estimate a single extrapolated curve instead for simplicity.
 
 ## R Examples
 
-We will use the `ovarian` data set from the `flexsurv` package.
-First, let us show how to get the KM and parametric fit using the total data set.
+We will use the `ovarian` data set from the `flexsurv` package. First, let us show how to get the KM and parametric fit using the total data set.
 
 ```{r warning=FALSE, message=FALSE}
 library(flexsurv)
@@ -62,14 +59,17 @@ It just remains to summarise the fitted curve and plot it with the KM.
 ```{r}
 summ <- summary(fitcp, t = seq(0, 1200, 10))
 
+S_cp <- summ[[1]]$est[summ[[1]]$time == 400]
+
 plot(fit_km)
 lines(x = summ[[1]][["time"]] + t_cutpt,
       y = summ[[1]][["est"]]*p_cutpt,
       type = "l", col = "red", lwd = 2)
 ```
 
-For convenience, we have written a package to do all of these steps called `gelber_hybrid_curve`.
+Notice that `p_cutpt` is the KM survival probability at the cut point $\hat{S}_{KM}(s_0)$.
 
+For convenience, we have written a package to do all of these steps called `gelber_hybrid_curve`.
 
 ```{r}
 #| code-fold: true
@@ -119,4 +119,3 @@ gelber_hybrid_curve(t_cutpt = 400, dist = "lognormal")
 gelber_hybrid_curve(t_cutpt = c(100, 400, 600), xlim = c(0, 2000))
 gelber_hybrid_curve(t_cutpt = c(100, 400, 600), dist = "lognormal", xlim = c(0, 2000))
 ```
-
