@@ -70,25 +70,25 @@ For other information criteria statistics it is straightforward to calculate the
 
 ```{r}
 #| code-fold: true
-#| code-summary: "plot_transformed_km() function"
+#| code-summary: "fitstats.flexsurvreg() function"
 
 # helper function
 # from flexsurv github
 # https://github.com/chjackson/flexsurv-dev/issues/44
-fitstats.flexsurvreg = function(x){
-  ll = x$loglik
-  aic = x$AIC
-  k = length(x$coefficients)
-  n = sum(x$data$m["(weights)"])
-  aicc = aic + ((2 * k) * (k + 1) / (n - k - 1))
-  bic = - 2 * ll + (k * log(n))
+fitstats.flexsurvreg <- function(x) {
+  ll <- x$loglik
+  aic <- x$AIC
+  k <- length(x$coefficients)
+  n <- sum(x$data$m["(weights)"])
+  aicc <- aic + ((2 * k) * (k + 1) / (n - k - 1))
+  bic <- - 2 * ll + (k * log(n))
+  
   data.frame(
    Df = k,
     "n2ll" = -2 * ll,
     AIC = aic,
     AICc = aicc,
-    BIC = bic
-  )
+    BIC = bic)
 }
 ```
 
@@ -98,7 +98,9 @@ Now if we run this we obtain all of the statistics for the previous generalised 
 fitstats.flexsurvreg(fitg)
 ```
 
-In a Bayesian model with `survHE` package.
+### Bayesian model with `survHE` package
+
+First let us fit an example model using `survHE`.
 
 ```{r warning=FALSE, message=FALSE}
 library(survHE)
@@ -110,8 +112,30 @@ mle <- fit.models(formula = Surv(recyrs,censrec) ~ group,
                   data = bc,
                   distr = "exp",
                   method = "mle")
+```
 
+Now, the print method for class `survHE` returns several model fitting summaries.
+
+```{r}
+print(mle)
+```
+
+If we wished to access the values directly, perhaps to use in our own code, then we can use
+
+```{r}
 mle$model.fitting
+```
 
-# survHE:::compute_ICs_stan()
+Further, if we were to fit several different models to compare the IC statistics, which is really the main point of doing it, then `survHE` also has some nice plotting functions.
+
+
+```{r}
+mle_multi <- fit.models(formula = Surv(recyrs,censrec) ~ group,
+                  data = bc,
+                  distr = c("exp", "weibull", "gompertz", "lognormal", "loglogistic"),
+                  method = "mle")
+
+model.fit.plot(mle_multi)
+model.fit.plot(mle_multi, type = "BIC")
+model.fit.plot(mle_multi, scale = "relative")
 ```

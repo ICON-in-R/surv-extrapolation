@@ -15,6 +15,7 @@ website:
     contents:
       - section: "Basics"
         contents:
+          - Introduction.qmd
           - intro-to-R.qmd
       - section: "Assessing the suitability of survival models"
         contents:

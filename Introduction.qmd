@@ -1,9 +1,14 @@
 ---
-title: "About"
+title: "Introduction"
 ---
 
-About this site
+<!-- lifted from the RHTA survival analysis chapter -->
+In health economic evaluations, the choice of intervention typically has consequences for lifetime survival. Therefore we often want to estimate the _expected survival_ over a lifetime horizon,
 
-```{r}
-1 + 1
-```
+$$
+\mbox{E}[T \mid \boldsymbol{\theta}]= \int_0^\infty S(t)dt.
+$$
+
+This implies that the expected (i.e. mean) survival time can be computed as the "area under the survival curve". More importantly, this clarifies why applications of survival modelling in HTA requires a full *extrapolation* of the survival curve: the focus of the economic analysis is on the mean survival time and in order to obtain it, we need to be able to derive the full survival curve in the range of times $t = 0, \ldots, \infty$. 
+
+A challenge with estimating lifetime survival based on trial data is that we can only observe death times $T$ that are shorter than the follow-up time of the trial.  For people still alive at the end of the trial, the survival times are right-censored.  To estimate $E(T)$, we need to know the distribution of $T$ over all plausible values of $T$.  

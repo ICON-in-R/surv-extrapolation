@@ -75,7 +75,7 @@ For convenience, we have written a package to do all of these steps called `gelb
 
 ```{r}
 #| code-fold: true
-#| code-summary: "plot_transformed_km() function"
+#| code-summary: "gelber_hybrid_curve() function"
 
 gelber_hybrid_curve <- function(formula =  Surv(futime, fustat) ~ 1,
                                 data = ovarian,

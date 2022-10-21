@@ -1,5 +1,5 @@
 ---
-title: "Assessing model assumptions using log-cumulative hazard plots"
+title: "Assessing model assumptions using transformed hazard plots"
 bibliography: references.bib
 format:
   html:
@@ -257,6 +257,9 @@ plot_transformed_km <- function(fit, mod = 1, add_legend = FALSE,
 }
 ```
 
+
+### Using `flexsurv`
+
 Further, we could use the `flexsurv` package [@Jackson2016]. This package contains lots of functions for a range of survival distributions.
 
 The cumulative hazard can be plotted with the `flexsurv` plotting method with argument `type = "cumhaz"`. The Kaplan-Meier is also overlaid by the model fit.
@@ -270,3 +273,19 @@ plot(fs1, type = "cumhaz")
 fs2 <- flexsurvreg(Surv(time1, time2, status) ~ 1, data = vdata, dist = "weibull")
 plot(fs2, type = "cumhaz")
 ```
+
+
+### Using `survHE`
+
+```{r}
+library("survHE")
+
+fs1 <- fit.models(Surv(time1, time2, status) ~ 1, data = vdata, dist = "exp")
+plot(fs1, type = "cumhaz")
+
+fs2 <- fit.models(Surv(time1, time2, status) ~ 1, data = vdata, dist = "weibull")
+plot(fs2, type = "cumhaz")
+```
+
+
+
