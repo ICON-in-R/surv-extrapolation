@@ -160,6 +160,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./Introduction.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">About</a>
   </div>
 </li>
@@ -180,7 +185,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./assess-transformed-km.html" class="sidebar-item-text sidebar-link">Assessing model assumptions using log-cumulative hazard plots</a>
+  <a href="./assess-transformed-km.html" class="sidebar-item-text sidebar-link">Assessing model assumptions using transformed hazard plots</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -240,7 +245,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a></li>
+  <li><a href="#r-examples" id="toc-r-examples" class="nav-link" data-scroll-target="#r-examples">R examples</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/n8thangreen/edit/main/blended-curves.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/n8thangreen/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -261,15 +273,328 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>About this site</p>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>We now present a novel approach to alleviate the problem of survival extrapolation with heavily censored data from clinical trials. The main idea is to mix a flexible model (e.g., Cox semiparametric) to fit as well as possible the observed data and a parametric model encoding assumptions on the expected behavior of underlying long-term survival. The two are ‘‘blended’’ into a single survival curve that is identical with the Cox model over the range of observed times and gradually approaching the parametric model over the extrapolation period based on a weight function. The weight function regulates the way two survival curves are blended, determining how the internal and external sources contribute to the estimated survival over time.</p>
+</section>
+<section id="r-examples" class="level2">
+<h2 class="anchored" data-anchor-id="r-examples">R examples</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"StatisticsHealthEconomics/blendR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the first example we will use the <code>survHE</code> and <code>INLA</code> packages to fit the external and observed data models, respectively.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survHE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Rcpp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: flexsurv</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: survival</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: dplyr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(INLA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: foreach</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: parallel</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is INLA_22.05.07 built 2022-05-07 09:52:03 UTC.
+ - See www.r-inla.org/contact-us for how to get help.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(blendR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Load data the sample data from the <code>blendR</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"TA174_FCR"</span>, <span class="at">package =</span> <span class="st">"blendR"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_FCR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code># A tibble: 6 × 5
+  patid treat death death_t death_ty
+  &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1     1     1     0  32       2.67  
+2     2     1     0  30.6     2.55  
+3     3     1     0  28       2.33  
+4     8     1     0  30       2.5   
+5    10     1     1   0.458   0.0382
+6    11     1     1   1.57    0.131 </code></pre>
+</div>
+</div>
+<p>Fit to the observed data to obtain the survival object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>obs_Surv <span class="ot">&lt;-</span> blendR<span class="sc">:::</span><span class="fu">surv_est_inla</span>(<span class="at">data =</span> dat_FCR,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">cutpoints =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">180</span>, <span class="at">by =</span> <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Similarly, fit the external estimate but first we need to create a synthetic data set consistent with expert judgment. In this case we suppose that we have the information that at time 144 the probability of survival is 0.05.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>data_sim <span class="ot">&lt;-</span> blendR<span class="sc">:::</span><span class="fu">ext_surv_sim</span>(<span class="at">t_info =</span> <span class="dv">144</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">S_info =</span> <span class="fl">0.05</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">T_max =</span> <span class="dv">180</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>ext_Surv <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(time, event) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> data_sim,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">distr =</span> <span class="st">"gompertz"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">method =</span> <span class="st">"hmc"</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">priors =</span> <span class="fu">list</span>(<span class="at">gom =</span> <span class="fu">list</span>(<span class="at">a_alpha =</span> <span class="fl">0.1</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">b_alpha =</span> <span class="fl">0.1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+SAMPLING FOR MODEL 'Gompertz' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 0 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 2.966 seconds (Warm-up)
+Chain 1:                0.222 seconds (Sampling)
+Chain 1:                3.188 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'Gompertz' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 0 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0.172 seconds (Warm-up)
+Chain 2:                0.24 seconds (Sampling)
+Chain 2:                0.412 seconds (Total)
+Chain 2: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There were 3 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
+https://mc-stan.org/misc/warnings.html#bfmi-low</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Examine the pairs() plot to diagnose sampling problems</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The largest R-hat is 3.66, indicating chains have not mixed.
+Running the chains for more iterations may help. See
+https://mc-stan.org/misc/warnings.html#r-hat</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+Running the chains for more iterations may help. See
+https://mc-stan.org/misc/warnings.html#bulk-ess</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+Running the chains for more iterations may help. See
+https://mc-stan.org/misc/warnings.html#tail-ess</code></pre>
+</div>
+</div>
+<p>Now we are ready to fit the blended survival curve. We also need to provide the additional information of how the observed data and external curves are blended together using the beta distribution. That is, we define the blending region <code>min</code> and <code>max</code> and the parameters <code>alpha</code> and <code>beta</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>blend_interv <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">min =</span> <span class="dv">48</span>, <span class="at">max =</span> <span class="dv">150</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>beta_params <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">alpha =</span> <span class="dv">3</span>, <span class="at">beta =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>before putting this all together in the <code>blendsurv</code> function</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ble_Surv <span class="ot">&lt;-</span> blendR<span class="sc">:::</span><span class="fu">blendsurv</span>(obs_Surv, ext_Surv, blend_interv, beta_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>as(&lt;dgCMatrix&gt;, "dgTMatrix") is deprecated since Matrix 1.5-0; do as(., "TsparseMatrix") instead</code></pre>
+</div>
+</div>
+<p>There is a plotting method available for <code>blendr</code> objects so simple call the following to return the blended survival curve graph.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ble_Surv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="blended-curves_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can alternatively use other survival curves and fitting function for each part of the blended curve. Here we use <code>fit.model</code> from <code>survHE</code> instead of the <code>INLA</code> fitting function for the observed data model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>obs_Surv2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(death_t, death) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> dat_FCR,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">distr =</span> <span class="st">"exponential"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"hmc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+SAMPLING FOR MODEL 'Exponential' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 0 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 0.419 seconds (Warm-up)
+Chain 1:                0.245 seconds (Sampling)
+Chain 1:                0.664 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'Exponential' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 0 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0.384 seconds (Warm-up)
+Chain 2:                0.323 seconds (Sampling)
+Chain 2:                0.707 seconds (Total)
+Chain 2: </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ext_Surv2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(time, event) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> data_sim,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">distr =</span> <span class="st">"exponential"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">method =</span> <span class="st">"hmc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+SAMPLING FOR MODEL 'Exponential' NOW (CHAIN 1).
+Chain 1: 
+Chain 1: Gradient evaluation took 0 seconds
+Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+Chain 1: Adjust your expectations accordingly!
+Chain 1: 
+Chain 1: 
+Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 1: 
+Chain 1:  Elapsed Time: 0.138 seconds (Warm-up)
+Chain 1:                0.085 seconds (Sampling)
+Chain 1:                0.223 seconds (Total)
+Chain 1: 
+
+SAMPLING FOR MODEL 'Exponential' NOW (CHAIN 2).
+Chain 2: 
+Chain 2: Gradient evaluation took 0 seconds
+Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+Chain 2: Adjust your expectations accordingly!
+Chain 2: 
+Chain 2: 
+Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
+Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
+Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
+Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
+Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
+Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
+Chain 2: 
+Chain 2:  Elapsed Time: 0.131 seconds (Warm-up)
+Chain 2:                0.072 seconds (Sampling)
+Chain 2:                0.203 seconds (Total)
+Chain 2: </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>ble_Surv2 <span class="ot">&lt;-</span> blendR<span class="sc">:::</span><span class="fu">blendsurv</span>(obs_Surv2, ext_Surv2, blend_interv, beta_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can also include the original data Kaplan-Meier in the output plot by simple appending it to the basic plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># kaplan-meier</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(death_t, death) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dat_FCR)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ble_Surv2) <span class="sc">+</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(km<span class="sc">$</span>time, km<span class="sc">$</span>surv, <span class="at">colour =</span> <span class="st">"Kaplan-Meier"</span>),</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">1.25</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="blended-curves_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
