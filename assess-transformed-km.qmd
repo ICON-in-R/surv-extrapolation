@@ -73,29 +73,13 @@ We can plot the log-cumulative hazard against log-time by simply plotting the `s
 plot(log(fit$time), log(fit$cumhaz), xlab = "log-Days", ylab = "Log-cumulative hazard", type = "l")
 ```
 
-For the following we will require the latest development version fo the `survHE` package [@Baio2020]. We can obtain this from GitHub with the following.
+For the following, the latest development version fo the `survHE` package [@Baio2020] contains all of the functions that we will need. We can obtain this from GitHub with the following.
 
-```{r, warning=FALSE, message=FALSE}
+```{r eval=FALSE, warning=FALSE, message=FALSE}
 devtools::install_github("giabaio/survHE", ref = "devel")
 ```
 
-Now we can repeat the above analysis using the `plot_transformed_km` function. By setting `distr = "exp"` the cumulative hazard plot is returned.
-
-```{r}
-fit_exp <- survHE::fit.models(Surv(time1, time2, status) ~ 1,
-                              data = vdata, distr = "exp", method = "mle")
-survHE:::plot_transformed_km(fit_exp)
-```
-
-Setting `distr = "weibull"` then we get the log-cumulative hazard against log-time plot.
-
-```{r}
-fit_wei <- survHE::fit.models(Surv(time1, time2, status) ~ 1,
-                              data = vdata, distr = "weibull", method = "mle")
-survHE:::plot_transformed_km(fit_wei)
-```
-
-The `plot_transformed_km` also provides plots for log-normal and log-logistic distribution assumptions with the corresponding transformation to the survival data.
+In particular, we will need the `plot_transformed_km` function.
 
 ```{r}
 #| code-fold: true
@@ -255,8 +239,32 @@ plot_transformed_km <- function(fit, mod = 1, add_legend = FALSE,
   
   invisible(params)
 }
+
+get_distribution <- function(fit, mod) {
+    m <- fit$models[[mod]]
+    tolower(ifelse(fit$method == "hmc", m@model_name, m$dlist$name))
+}
 ```
 
+Now we can repeat the above analysis using the `plot_transformed_km` function. By setting `distr = "exp"` the cumulative hazard plot is returned.
+
+```{r}
+library(survHE)
+
+fit_exp <- survHE::fit.models(Surv(time1, time2, status) ~ 1,
+                              data = vdata, distr = "exp", method = "mle")
+plot_transformed_km(fit_exp)
+```
+
+Setting `distr = "weibull"` then we get the log-cumulative hazard against log-time plot.
+
+```{r}
+fit_wei <- survHE::fit.models(Surv(time1, time2, status) ~ 1,
+                              data = vdata, distr = "weibull", method = "mle")
+plot_transformed_km(fit_wei)
+```
+
+The `plot_transformed_km` also provides plots for log-normal and log-logistic distribution assumptions with the corresponding transformation to the survival data.
 
 ### Using `flexsurv`
 
@@ -274,7 +282,6 @@ fs2 <- flexsurvreg(Surv(time1, time2, status) ~ 1, data = vdata, dist = "weibull
 plot(fs2, type = "cumhaz")
 ```
 
-
 ### Using `survHE`
 
 ```{r}
@@ -286,6 +293,3 @@ plot(fs1, type = "cumhaz")
 fs2 <- fit.models(Surv(time1, time2, status) ~ 1, data = vdata, dist = "weibull")
 plot(fs2, type = "cumhaz")
 ```
-
-
-

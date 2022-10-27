@@ -1,55 +1,60 @@
 ---
 title: "Blended curves"
+bibliography: references.bib
+format:
+  html:
+    code-copy: true
+editor_options: 
+  chunk_output_type: console
 ---
-
 
 ## Background
 
-We now present a novel approach to alleviate the problem of survival extrapolation with heavily censored
-data from clinical trials. The main idea is to mix a flexible model (e.g., Cox semiparametric) to fit as well as
-possible the observed data and a parametric model encoding assumptions on the expected behavior of underlying
-long-term survival. The two are ‘‘blended’’ into a single survival curve that is identical with the Cox model over the
-range of observed times and gradually approaching the parametric model over the extrapolation period based on a
-weight function. The weight function regulates the way two survival curves are blended, determining how the internal
-and external sources contribute to the estimated survival over time.
+We now present a novel approach to alleviate the problem of survival extrapolation with heavily censored data from clinical trials. The main idea is to mix a flexible model (e.g., Cox semiparametric) to fit as well as possible the observed data and a parametric model encoding assumptions on the expected behavior of underlying long-term survival. The two are ''blended'' into a single survival curve that is identical with the Cox model over the range of observed times and gradually approaching the parametric model over the extrapolation period based on a weight function. The weight function regulates the way two survival curves are blended, determining how the internal and external sources contribute to the estimated survival over time.
 
+## R Examples
 
-## R examples
+We need to have the `blendR` package installed to run this example. This is currently available on GitHub.
 
 ```{r eval=FALSE}
 devtools::install_github("StatisticsHealthEconomics/blendR")
 ```
 
-
 In the first example we will use the `survHE` and `INLA` packages to fit the external and observed data models, respectively.
+If the `survHE` version for doing HMC is missing then install this.
 
-```{r}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+remotes::install_github('giabaio/survHE', ref='hmc')
+```
+
+Attach these packages.
+
+```{r echo = FALSE, message=FALSE, warning=FALSE}
 library(survHE)
 library(INLA)
 library(blendR)
 ```
 
-Load data the sample data from the `blendR` package.
+We will use the data set available within `blendR` and so load data in to the current environment.
 
 ```{r}
 data("TA174_FCR", package = "blendR")
 head(dat_FCR)
 ```
 
-Fit to the observed data to obtain the survival object.
+Fit to the observed data uinsg `INLA` to obtain the survival object. `blendR` has a helper function to do this for a piece-wise exponential distribution. The `cutpoints` argument determines where the points on the survival curve are between which the hazard is constant i.e. an exponential curve.
 
-```{r}
-obs_Surv <- blendR:::surv_est_inla(data = dat_FCR,
-                          cutpoints = seq(0, 180, by = 5))
+```{r message=FALSE, warning=FALSE}
+obs_Surv <- blendR::surv_est_inla(data = dat_FCR,
+                                  cutpoints = seq(0, 180, by = 5))
 ```
 
-Similarly, fit the external estimate but first we need to create a synthetic data set consistent with expert judgment.
-In this case we suppose that we have the information that at time 144 the probability of survival is 0.05.
+Similarly, we fit the external estimate but first we need to create a synthetic data set consistent with expert judgment. This can be elicited ad-hoc or formally and the process of doing so is a field in itself. Once the values have been elicited then `blendR` had a function to translate from elicited survival curve constraints to a random sample of survival times. In this case we suppose that we have the information that at time 144 the probability of survival is 0.05.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 data_sim <- blendR:::ext_surv_sim(t_info = 144,
-                         S_info = 0.05,
-                         T_max = 180)
+                                  S_info = 0.05,
+                                  T_max = 180)
 
 ext_Surv <- fit.models(formula = Surv(time, event) ~ 1,
                        data = data_sim,
@@ -59,47 +64,44 @@ ext_Surv <- fit.models(formula = Surv(time, event) ~ 1,
                                                 b_alpha = 0.1)))
 ```
 
-Now we are ready to fit the blended survival curve.
-We also need to provide the additional information of how the observed data and external curves are blended together using the beta distribution.
-That is, we define the blending region `min` and `max` and the parameters `alpha` and `beta`.
+Now we are nearly ready to fit the blended survival curve. We also need to provide the additional information of how the observed data and external curves are blended together using the beta distribution. That is, we define the blending region `min` and `max` and the parameters `alpha` and `beta`.
 
 ```{r}
 blend_interv <- list(min = 48, max = 150)
 beta_params <- list(alpha = 3, beta = 3)
 ```
 
-before putting this all together in the `blendsurv` function
+before putting this all together in the `blendsurv` function.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 ble_Surv <- blendR:::blendsurv(obs_Surv, ext_Surv, blend_interv, beta_params)
 ```
 
-There is a plotting method available for `blendr` objects so simple call the following to return the blended survival curve graph.
+A plotting method is available for `blendR` objects so simply call the following to return the blended survival curve graph.
 
 ```{r}
 plot(ble_Surv)
 ```
 
-We can alternatively use other survival curves and fitting function for each part of the blended curve.
-Here we use `fit.model` from `survHE` instead of the `INLA` fitting function for the observed data model.
+We can alternatively use other survival curves and fitting function for each part of the blended curve. Here we use also `fit.model` from `survHE` instead of the `INLA` fitting function for the observed data model.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 obs_Surv2 <- fit.models(formula = Surv(death_t, death) ~ 1,
                         data = dat_FCR,
                         distr = "exponential",
                         method = "hmc")
 
 ext_Surv2 <- fit.models(formula = Surv(time, event) ~ 1,
-                       data = data_sim,
-                       distr = "exponential",
-                       method = "hmc")
+                        data = data_sim,
+                        distr = "exponential",
+                        method = "hmc")
 
 ble_Surv2 <- blendR:::blendsurv(obs_Surv2, ext_Surv2, blend_interv, beta_params)
 ```
 
-We can also include the original data Kaplan-Meier in the output plot by simple appending it to the basic plot.
+We can also include the original data Kaplan-Meier in the output plot by simply appending it to the basic plot.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # kaplan-meier
 km <- survfit(Surv(death_t, death) ~ 1, data = dat_FCR)
 
