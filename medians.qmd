@@ -1,0 +1,105 @@
+---
+title: "Medians"
+bibliography: references.bib
+format:
+  html:
+    code-copy: true
+editor_options: 
+  chunk_output_type: console
+---
+
+## Background
+
+::: callout-tip
+:::
+
+## R Examples
+
+The summary method for a `survHE` object returns medians.
+
+```{r warning=FALSE, message=FALSE}
+library(survHE)
+
+data(bc)
+
+mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
+                  data = bc,
+                  distr = "exp",
+                  method = "mle")
+
+summary(mle)
+```
+
+We can compare this parametric estimate with that from the Kaplan-Meier.
+
+```{r}
+min(mle$misc$km$time[mle$misc$km$surv < 0.5])
+```
+
+If we denote the median with $t_{50}$ then to get the medians ourselves we can take the coefficient value from the `fit.model` output and use the fact that
+
+$$
+t_{50} = - log (0.5)/\lambda
+$$
+
+```{r}
+rate <- mle$models$Exponential$coefficients
+exp(rate)
+
+# closed form
+meantime <- -log(0.5)/exp(rate)
+meantime
+```
+
+Note that the parameter returned from `fit.model` is the log of the rate. Alternatively, and more general, we can simulate (multiple) survival curves from the coefficient posterior and estimate the median for each of these.
+
+So, sample from the posterior using `make.surv()` from the `survHE` package to get for the single curve case as follows
+
+```{r}
+xx <- make.surv(mle)
+purrr::map_dbl(xx$S, ~ min(.x$t[.x$S < 0.5]))
+```
+
+It follows that we can do something similar for multiple simulations to obtain uncertainty bounds.
+
+```{r}
+xx <- make.surv(mle, nsim = 100)
+
+# direct estimates
+rtimes <- purrr::map_dbl(unlist(xx$sim), ~ -log(0.5)/.x)
+
+# simulated estimates
+t_S <- purrr::map_dbl(xx$S, ~ min(.x$t[.x$S < 0.5]))
+t_low <- purrr::map_dbl(xx$S, ~ min(.x$t[.x$low < 0.5]))
+t_upp <- purrr::map_dbl(xx$S, ~ min(.x$t[.x$upp < 0.5]))
+```
+
+```{r}
+plot(mle) + 
+  geom_vline(xintercept = rtimes, alpha = 0.1, col = "darkgrey", size = 2) +
+  geom_vline(xintercept = meantime) +
+  geom_vline(xintercept = t_low, linetype = 2) +
+  geom_vline(xintercept = t_upp, linetype = 2)
+```
+
+### Multiple groups
+
+```{r}
+# Fits the same model using the 3 inference methods
+mle <- fit.models(formula = Surv(recyrs,censrec) ~ group,
+                  data = bc,
+                  distr = "exp",
+                  method = "mle")
+mle
+
+xx <- make.surv(mle)
+
+purrr::map_dbl(xx$S, ~ min(.x$t[.x$S < 0.5]))
+
+rate <- mle$models$Exponential$coefficients
+
+meantime <- -log(0.5)/rate
+
+
+## plots
+```

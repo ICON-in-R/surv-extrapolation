@@ -10,7 +10,7 @@ editor_options:
 
 ## Background
 
-Akaike's Information Criterion (AIC) and the Bayesian Information Criterion (BIC) provide a useful statistical test of the relative fit of alternative parametric models, and they are usually available as outputs from statistical software. Further details on these are available from [@Collett2003]. Measures such as the negative 2 log likelihood are only suitable for comparing nested models, whereby one model is nested within another (for example, one model adds an additional covariate compared to another model). Different parametric models which use different probability distributions cannot be nested within one another. Thus the negative 2 log likelihood test is not suitable for assessing the fit of alternative parametric models. The AIC and BIC allow a comparison of models that do not have to be nested, including a term which penalises the use of unnecessary covariates (these are penalised more highly by the BIC). Generally, it is not necessary to include covariates in survival modelling in the context of an RCT as it would be expected that any important covariates would be balanced through the process of randomisation. However, some parametric models have more parameters than others, and the AIC and BIC take account of these -- for example an exponential model only has one parameter and so in comparative terms two parameter models such as the Weibull or Gompertz models are penalised. The AIC and BIC statistics therefore weigh up the improved fit of models with the potentially inefficient use of additional parameters, with the use of additional parameters penalised more highly by the BIC relative to the AIC.
+Akaike's Information Criterion (AIC) and the Bayesian Information Criterion (BIC) provide a useful statistical test of the relative fit of alternative parametric models, and they are usually available as outputs from statistical software. Further details on these are available from [@Collett2013]. Measures such as the negative 2 log likelihood are only suitable for comparing nested models, whereby one model is nested within another (for example, one model adds an additional covariate compared to another model). Different parametric models which use different probability distributions cannot be nested within one another. Thus the negative 2 log likelihood test is not suitable for assessing the fit of alternative parametric models. The AIC and BIC allow a comparison of models that do not have to be nested, including a term which penalises the use of unnecessary covariates (these are penalised more highly by the BIC). Generally, it is not necessary to include covariates in survival modelling in the context of an RCT as it would be expected that any important covariates would be balanced through the process of randomisation. However, some parametric models have more parameters than others, and the AIC and BIC take account of these -- for example an exponential model only has one parameter and so in comparative terms two parameter models such as the Weibull or Gompertz models are penalised. The AIC and BIC statistics therefore weigh up the improved fit of models with the potentially inefficient use of additional parameters, with the use of additional parameters penalised more highly by the BIC relative to the AIC.
 
 Suppose that we have a statistical model of some data. Let $k$ be the number of estimated parameters in the model. Let $\hat{L}$ be the maximized value of the likelihood function for the model. Then the AIC value of the model is the following.
 
@@ -28,10 +28,14 @@ $$
 
 where
 
-$\hat{L}$ = the maximized value of the likelihood function of the model $M$, i.e. $\hat{L} = p(x \mid \widehat{\theta}, M)$, where $\widehat{\theta}$ are the parameter values that maximize the likelihood function;
-$x$ = the observed data;
-$n$ = the number of data points in $x$, the number of observations, or equivalently, the sample size;
-$k$ = the number of parameters estimated by the model. For example, in multiple linear regression, the estimated parameters are the intercept, the $q$ slope parameters, and the constant variance of the errors; thus, $k = q + 2$.
+$\hat{L}$ = the maximized value of the likelihood function of the model $M$, i.e. $\hat{L} = p(x \mid \widehat{\theta}, M)$, where $\widehat{\theta}$ are the parameter values that maximize the likelihood function; $x$ = the observed data; $n$ = the number of data points in $x$, the number of observations, or equivalently, the sample size; $k$ = the number of parameters estimated by the model. For example, in multiple linear regression, the estimated parameters are the intercept, the $q$ slope parameters, and the constant variance of the errors; thus, $k = q + 2$.
+
+:::{.callout-warning}
+## Relative values
+
+IC values only really make sense when compared between one another i.e relatively. The absolute value is not helpful and depends on the specifics of the model and data.
+:::
+
 
 ## R example
 
@@ -57,7 +61,7 @@ BIC(fit_ph)
 
 ### Parametric model with `flexsurv`
 
-The package `flexsurv` computes the AIC when it fits a model. This can be accessed by `.$AIC$ i.e.
+The package `flexsurv` computes the AIC when it fits a model. This can be accessed by \`.$AIC$ i.e.
 
 ```{r warning=FALSE, message=FALSE}
 library(flexsurv)
@@ -127,7 +131,6 @@ mle$model.fitting
 ```
 
 Further, if we were to fit several different models to compare the IC statistics, which is really the main point of doing it, then `survHE` also has some nice plotting functions.
-
 
 ```{r}
 mle_multi <- fit.models(formula = Surv(recyrs,censrec) ~ group,

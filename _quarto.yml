@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "surv-extrapolation"
+  title: "Survival curve extrapolation"
   # navbar:
   #   left:
   #     - href: index.qmd
@@ -29,6 +29,7 @@ website:
           - parametric-modelling.qmd
           - PH-modelling.qmd
           - external-data.qmd
+          - medians.qmd
           - blended-curves.qmd
           - other-hybrid-methods.qmd
   page-footer: "Copyright 2022, Nathan Green"

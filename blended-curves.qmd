@@ -1,5 +1,5 @@
 ---
-title: "Blended curves"
+title: "Blended survival curves"
 bibliography: references.bib
 format:
   html:
@@ -10,7 +10,14 @@ editor_options:
 
 ## Background
 
-We now present a novel approach to alleviate the problem of survival extrapolation with heavily censored data from clinical trials. The main idea is to mix a flexible model (e.g., Cox semiparametric) to fit as well as possible the observed data and a parametric model encoding assumptions on the expected behavior of underlying long-term survival. The two are ''blended'' into a single survival curve that is identical with the Cox model over the range of observed times and gradually approaching the parametric model over the extrapolation period based on a weight function. The weight function regulates the way two survival curves are blended, determining how the internal and external sources contribute to the estimated survival over time.
+We now present a novel approach to alleviate the problem of survival extrapolation with heavily censored data from clinical trials. The main idea is to mix a flexible model (e.g., Cox semiparametric) to fit as well as possible the observed data and a parametric model encoding assumptions on the expected behaviour of underlying long-term survival. The two are ''blended'' into a single survival curve that is identical with the Cox model over the range of observed times and gradually approaching the parametric model over the extrapolation period based on a weight function. The weight function regulates the way two survival curves are blended, determining how the internal and external sources contribute to the estimated survival over time.
+Further details can be found in [@Che2022].
+
+:::{.callout-tip}
+## Shiny app
+
+There is an RShiny version of the `blendR` package for using blended curves interactively in the browser. See here.
+:::
 
 ## R Examples
 
@@ -20,8 +27,7 @@ We need to have the `blendR` package installed to run this example. This is curr
 devtools::install_github("StatisticsHealthEconomics/blendR")
 ```
 
-In the first example we will use the `survHE` and `INLA` packages to fit the external and observed data models, respectively.
-If the `survHE` version for doing HMC is missing then install this.
+In the first example we will use the `survHE` and `INLA` packages to fit the external and observed data models, respectively. If the `survHE` version for doing HMC is missing then install this.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 remotes::install_github('giabaio/survHE', ref='hmc')
@@ -52,7 +58,7 @@ obs_Surv <- blendR::surv_est_inla(data = dat_FCR,
 Similarly, we fit the external estimate but first we need to create a synthetic data set consistent with expert judgment. This can be elicited ad-hoc or formally and the process of doing so is a field in itself. Once the values have been elicited then `blendR` had a function to translate from elicited survival curve constraints to a random sample of survival times. In this case we suppose that we have the information that at time 144 the probability of survival is 0.05.
 
 ```{r message=FALSE, warning=FALSE}
-data_sim <- blendR:::ext_surv_sim(t_info = 144,
+data_sim <- blendR::ext_surv_sim(t_info = 144,
                                   S_info = 0.05,
                                   T_max = 180)
 
@@ -74,7 +80,7 @@ beta_params <- list(alpha = 3, beta = 3)
 before putting this all together in the `blendsurv` function.
 
 ```{r message=FALSE, warning=FALSE}
-ble_Surv <- blendR:::blendsurv(obs_Surv, ext_Surv, blend_interv, beta_params)
+ble_Surv <- blendR::blendsurv(obs_Surv, ext_Surv, blend_interv, beta_params)
 ```
 
 A plotting method is available for `blendR` objects so simply call the following to return the blended survival curve graph.
@@ -96,7 +102,7 @@ ext_Surv2 <- fit.models(formula = Surv(time, event) ~ 1,
                         distr = "exponential",
                         method = "hmc")
 
-ble_Surv2 <- blendR:::blendsurv(obs_Surv2, ext_Surv2, blend_interv, beta_params)
+ble_Surv2 <- blendR::blendsurv(obs_Surv2, ext_Surv2, blend_interv, beta_params)
 ```
 
 We can also include the original data Kaplan-Meier in the output plot by simply appending it to the basic plot.
