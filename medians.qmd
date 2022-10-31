@@ -15,7 +15,7 @@ editor_options:
 
 ## R Examples
 
-The summary method for a `survHE` object returns medians.
+The summary method for a `survHE` object returns mean survival times, including the median mean survival time.
 
 ```{r warning=FALSE, message=FALSE}
 library(survHE)
@@ -30,7 +30,7 @@ mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
 summary(mle)
 ```
 
-We can compare this parametric estimate with that from the Kaplan-Meier.
+We can compare these parametric estimate with the median survival time from the Kaplan-Meier.
 
 ```{r}
 min(mle$misc$km$time[mle$misc$km$surv < 0.5])
@@ -57,7 +57,7 @@ So, sample from the posterior using `make.surv()` from the `survHE` package to g
 
 ```{r}
 xx <- make.surv(mle)
-purrr::map_dbl(xx$S, ~ min(.x$t[.x$S < 0.5]))
+min(xx$S[[1]]$t[xx$S[[1]]$S < 0.5])
 ```
 
 It follows that we can do something similar for multiple simulations to obtain uncertainty bounds.
@@ -66,12 +66,12 @@ It follows that we can do something similar for multiple simulations to obtain u
 xx <- make.surv(mle, nsim = 100)
 
 # direct estimates
-rtimes <- purrr::map_dbl(unlist(xx$sim), ~ -log(0.5)/.x)
+rtimes <- -log(0.5)/unlist(xx$sim)
 
 # simulated estimates
-t_S <- purrr::map_dbl(xx$S, ~ min(.x$t[.x$S < 0.5]))
-t_low <- purrr::map_dbl(xx$S, ~ min(.x$t[.x$low < 0.5]))
-t_upp <- purrr::map_dbl(xx$S, ~ min(.x$t[.x$upp < 0.5]))
+t_S <- min(xx$S[[1]]$t[xx$S[[1]]$S < 0.5])
+t_low <- min(xx$S[[1]]$t[xx$S[[1]]$low < 0.5])
+t_upp <- min(xx$S[[1]]$t[xx$S[[1]]$upp < 0.5])
 ```
 
 ```{r}
@@ -81,6 +81,64 @@ plot(mle) +
   geom_vline(xintercept = t_low, linetype = 2) +
   geom_vline(xintercept = t_upp, linetype = 2)
 ```
+
+
+### Multiple distributions
+
+```{r}
+fit2 <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
+                   data = bc,
+                   dist = c("exp", "loglogistic"),
+                   method = "mle")
+
+plot(fit2)
+```
+
+The log-logistic distribution has CDF
+
+$$
+\frac{1}{(1 + (t/\alpha)^{\beta})^2}
+$$
+Which leads to the median $t_{50} = \alpha$, the shape parameter.
+
+```{r}
+sim <- list()
+sim[[1]] <- make.surv(fit2, mod = 1, nsim = 100)
+sim[[2]] <- make.surv(fit2, mod = 2, nsim = 100)
+
+sim <- purrr::transpose(sim)
+
+# direct estimates
+rtimes <- list()
+rtimes[[1]] <- -log(0.5)/sim$sim[[1]][[1]][, "rate"]
+rtimes[[2]] <- sim$sim[[2]][[1]][, "scale"]
+
+# simulated estimates
+t_S <- purrr::map_dbl(sim$S, ~ min(.x[[1]]$t[.x[[1]]$S < 0.5]))
+t_low <- purrr::map_dbl(sim$S, ~ min(.x[[1]]$t[.x[[1]]$low < 0.5]))
+t_upp <- purrr::map_dbl(sim$S, ~ min(.x[[1]]$t[.x[[1]]$upp < 0.5]))
+```
+
+```{r}
+plot(fit2) + 
+  geom_vline(xintercept = rtimes[[1]], alpha = 0.1, col = "pink", size = 2) +
+  geom_vline(xintercept = rtimes[[2]], alpha = 0.1, col = "lightblue", size = 2) +
+  geom_vline(xintercept = t_S[[1]]) +
+  geom_vline(xintercept = t_low[[1]], linetype = 2) +
+  geom_vline(xintercept = t_upp[[1]], linetype = 2) +
+  geom_vline(xintercept = t_S[[2]]) +
+  geom_vline(xintercept = t_low[[2]], linetype = 3) +
+  geom_vline(xintercept = t_upp[[2]], linetype = 3)
+```
+
+
+### Multiple percentiles
+
+https://stats.stackexchange.com/questions/19005/finding-median-survival-time-from-survival-function#:~:text=M%3D%7Bt(n%2B,S(M)%3D0.5.
+
+### Compare with Kaplan-Meier
+
+
 
 ### Multiple groups
 
