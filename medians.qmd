@@ -129,6 +129,7 @@ plot(fit2) +
   geom_vline(xintercept = t_upp[[2]], linetype = 3)
 ```
 
+
 ### Multiple percentiles
 
 A general formula for the $p$th sample percentile of the survival time distribution is computed as
@@ -157,6 +158,17 @@ plot(mle) +
 
 
 ### Compare with Kaplan-Meier
+
+histograms of median posteriors for each distribution with KM point value, for different percentiles.
+
+IDEA:
+this feels like posterior predictive checking thats already in rstan?
+so what if, rather than sample parameters and fit curve for a given distribution, we sample parameter then sample cohort survival times then fit KM then obtain medians from this?
+This then would contain the individual level variability as well as the parameter uncertainty...
+
+```{r}
+
+```
 
 ### Multiple groups
 
