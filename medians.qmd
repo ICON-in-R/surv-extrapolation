@@ -82,7 +82,6 @@ plot(mle) +
   geom_vline(xintercept = t_upp, linetype = 2)
 ```
 
-
 ### Multiple distributions
 
 ```{r}
@@ -98,8 +97,7 @@ The log-logistic distribution has CDF
 
 $$
 \frac{1}{(1 + (t/\alpha)^{\beta})^2}
-$$
-Which leads to the median $t_{50} = \alpha$, the shape parameter.
+$$ Which leads to the median $t_{50} = \alpha$, the shape parameter.
 
 ```{r}
 sim <- list()
@@ -131,14 +129,34 @@ plot(fit2) +
   geom_vline(xintercept = t_upp[[2]], linetype = 3)
 ```
 
-
 ### Multiple percentiles
 
-https://stats.stackexchange.com/questions/19005/finding-median-survival-time-from-survival-function#:~:text=M%3D%7Bt(n%2B,S(M)%3D0.5.
+A general formula for the $p$th sample percentile of the survival time distribution is computed as
+
+$$
+q_p = \frac{1}{2}(\inf\{t:1−\hat{S}(t) ≥ p\} + \sup\{t:1−\hat{S}(t) ≤ p\})
+$$
+```{r}
+mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
+                  data = bc,
+                  distr = "exp",
+                  method = "mle")
+
+xx <- make.surv(mle)
+prctile <- 0.75
+min(xx$S[[1]]$t[xx$S[[1]]$S < prctile])
+
+prctile <- c(0.975, 0.75, 0.5, 0.25, 0.025)
+prctile_times <- purrr::map_dbl(prctile, ~min(xx$S[[1]]$t[xx$S[[1]]$S < .x]))
+
+plot(mle) + 
+  geom_vline(xintercept = prctile_times) +
+  annotate("text", x = prctile_times + 0.5, y = 0.25, label = prctile)
+```
+
+
 
 ### Compare with Kaplan-Meier
-
-
 
 ### Multiple groups
 

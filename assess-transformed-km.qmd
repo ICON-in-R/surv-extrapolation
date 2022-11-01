@@ -48,7 +48,7 @@ The package commonly used for survival analyses in R is the `survival` package [
 
 This uses their `reliability` data. Firstly a little data manipulation is done before we plot the cumulative hazard plot against time using the in-built `survival` package plotting method with the `cumhaz=TRUE` argument.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 library(survival)
 
 data("reliability", package = "survival")
@@ -248,7 +248,7 @@ get_distribution <- function(fit, mod) {
 
 Now we can repeat the above analysis using the `plot_transformed_km` function. By setting `distr = "exp"` the cumulative hazard plot is returned.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 library(survHE)
 
 fit_exp <- survHE::fit.models(Surv(time1, time2, status) ~ 1,
@@ -272,7 +272,7 @@ Further, we could use the `flexsurv` package [@Jackson2016]. This package contai
 
 The cumulative hazard can be plotted with the `flexsurv` plotting method with argument `type = "cumhaz"`. The Kaplan-Meier is also overlaid by the model fit.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 library("flexsurv")
 
 fs1 <- flexsurvreg(Surv(time1, time2, status) ~ 1, data = vdata, dist = "exp")
@@ -284,7 +284,7 @@ plot(fs2, type = "cumhaz")
 
 ### Using `survHE`
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 library("survHE")
 
 fs1 <- fit.models(Surv(time1, time2, status) ~ 1, data = vdata, dist = "exp")
