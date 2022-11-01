@@ -99,6 +99,27 @@ $$
 \frac{1}{(1 + (t/\alpha)^{\beta})^2}
 $$ Which leads to the median $t_{50} = \alpha$, the shape parameter.
 
+The Gompertz distribution median is
+
+$$
+(1/b)log[(-1/\eta) log(0.5) + 1]
+$$
+
+The Weibull distribution median is
+
+$$
+\lambda [- log(0.5)]^{1/k}
+$$
+
+The log-normal distribution median is
+
+$$
+exp(\mu)
+$$
+
+The gamma distribution has no simple closed form formula for the median.
+
+
 ```{r}
 sim <- list()
 sim[[1]] <- make.surv(fit2, mod = 1, nsim = 100)
