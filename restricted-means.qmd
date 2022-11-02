@@ -10,6 +10,6 @@ editor_options:
 
 Restricted means analysis can be used either for the base case analysis or as a sensitivity analysis. The method as used in the NICE TAs generally involved simply using all the available data to estimate the area under the Kaplan Meier curve up until the final observation, similar to an approach presented in the statistical literature by [@Moeschberger1985]. Generally, a restricted means approach has only been taken when trial data was relatively complete compared to situations where parametric modelling was used.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 library(survRM2)
 ```

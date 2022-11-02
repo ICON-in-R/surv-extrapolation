@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>surv-extrapolation - AIC/BIC tests</title>
+<title>Survival curve extrapolation - AIC/BIC tests</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -141,7 +160,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">surv-extrapolation</a> 
+      <a href="./">Survival curve extrapolation</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -186,7 +205,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./assess-transformed-km.html" class="sidebar-item-text sidebar-link">Assessing model assumptions using log-cumulative hazard plots</a>
+  <a href="./assess-transformed-km.html" class="sidebar-item-text sidebar-link">Assessing model assumptions using transformed hazard plots</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -231,7 +250,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./blended-curves.html" class="sidebar-item-text sidebar-link">Blended curves</a>
+  <a href="./medians.html" class="sidebar-item-text sidebar-link">Medians</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./blended-curves.html" class="sidebar-item-text sidebar-link">Blended survival curves</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -280,7 +304,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="background" class="level2">
 <h2 class="anchored" data-anchor-id="background">Background</h2>
-<p>Akaike’s Information Criterion (AIC) and the Bayesian Information Criterion (BIC) provide a useful statistical test of the relative fit of alternative parametric models, and they are usually available as outputs from statistical software. Further details on these are available from <span class="citation" data-cites="Collett2003">(<a href="#ref-Collett2003" role="doc-biblioref"><strong>Collett2003?</strong></a>)</span>. Measures such as the negative 2 log likelihood are only suitable for comparing nested models, whereby one model is nested within another (for example, one model adds an additional covariate compared to another model). Different parametric models which use different probability distributions cannot be nested within one another. Thus the negative 2 log likelihood test is not suitable for assessing the fit of alternative parametric models. The AIC and BIC allow a comparison of models that do not have to be nested, including a term which penalises the use of unnecessary covariates (these are penalised more highly by the BIC). Generally, it is not necessary to include covariates in survival modelling in the context of an RCT as it would be expected that any important covariates would be balanced through the process of randomisation. However, some parametric models have more parameters than others, and the AIC and BIC take account of these – for example an exponential model only has one parameter and so in comparative terms two parameter models such as the Weibull or Gompertz models are penalised. The AIC and BIC statistics therefore weigh up the improved fit of models with the potentially inefficient use of additional parameters, with the use of additional parameters penalised more highly by the BIC relative to the AIC.</p>
+<p>Akaike’s Information Criterion (AIC) and the Bayesian Information Criterion (BIC) provide a useful statistical test of the relative fit of alternative parametric models, and they are usually available as outputs from statistical software. Further details on these are available from <span class="citation" data-cites="Collett2013">(<a href="#ref-Collett2013" role="doc-biblioref">Collett 2013</a>)</span>. Measures such as the negative 2 log likelihood are only suitable for comparing nested models, whereby one model is nested within another (for example, one model adds an additional covariate compared to another model). Different parametric models which use different probability distributions cannot be nested within one another. Thus the negative 2 log likelihood test is not suitable for assessing the fit of alternative parametric models. The AIC and BIC allow a comparison of models that do not have to be nested, including a term which penalises the use of unnecessary covariates (these are penalised more highly by the BIC). Generally, it is not necessary to include covariates in survival modelling in the context of an RCT as it would be expected that any important covariates would be balanced through the process of randomisation. However, some parametric models have more parameters than others, and the AIC and BIC take account of these – for example an exponential model only has one parameter and so in comparative terms two parameter models such as the Weibull or Gompertz models are penalised. The AIC and BIC statistics therefore weigh up the improved fit of models with the potentially inefficient use of additional parameters, with the use of additional parameters penalised more highly by the BIC relative to the AIC.</p>
 <p>Suppose that we have a statistical model of some data. Let <span class="math inline">\(k\)</span> be the number of estimated parameters in the model. Let <span class="math inline">\(\hat{L}\)</span> be the maximized value of the likelihood function for the model. Then the AIC value of the model is the following.</p>
 <p><span class="math display">\[
 AIC = 2k - 2 \ln({\hat{L}})
@@ -292,6 +316,19 @@ BIC = k \ln(n) - 2 \ln(\widehat{L})
 \]</span></p>
 <p>where</p>
 <p><span class="math inline">\(\hat{L}\)</span> = the maximized value of the likelihood function of the model <span class="math inline">\(M\)</span>, i.e.&nbsp;<span class="math inline">\(\hat{L} = p(x \mid \widehat{\theta}, M)\)</span>, where <span class="math inline">\(\widehat{\theta}\)</span> are the parameter values that maximize the likelihood function; <span class="math inline">\(x\)</span> = the observed data; <span class="math inline">\(n\)</span> = the number of data points in <span class="math inline">\(x\)</span>, the number of observations, or equivalently, the sample size; <span class="math inline">\(k\)</span> = the number of parameters estimated by the model. For example, in multiple linear regression, the estimated parameters are the intercept, the <span class="math inline">\(q\)</span> slope parameters, and the constant variance of the errors; thus, <span class="math inline">\(k = q + 2\)</span>.</p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Relative values
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>IC values only really make sense when compared between one another i.e relatively. The absolute value is not helpful and depends on the specifics of the model and data.</p>
+</div>
+</div>
 </section>
 <section id="r-example" class="level2">
 <h2 class="anchored" data-anchor-id="r-example">R example</h2>
@@ -433,10 +470,15 @@ NULL</code></pre>
 </div>
 
 
+
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Collett2013" class="csl-entry" role="doc-biblioentry">
+Collett, Dave. 2013. <em><span class="nocase">Modelling Survival Data in Medical Research</span></em>. 3rd ed. Chapman; Hall/CRC. https://doi.org/<a href="https://doi.org/10.1201/b18041">https://doi.org/10.1201/b18041</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
