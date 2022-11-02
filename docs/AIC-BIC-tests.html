@@ -185,7 +185,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">Introduction to R</a>
   </div>
 </li>
       </ul>
@@ -235,7 +235,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">Parametric modelling</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -245,7 +245,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./external-data.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./external-data.html" class="sidebar-item-text sidebar-link">External data</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -410,11 +410,10 @@ Relative values
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(bc)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Fits the same model using the 3 inference methods</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs,censrec) <span class="sc">~</span> group,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> bc,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">distr =</span> <span class="st">"exp"</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"mle"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs,censrec) <span class="sc">~</span> group,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> bc,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">distr =</span> <span class="st">"exp"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"mle"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, the print method for class <code>survHE</code> returns several model fitting summaries.</p>
 <div class="cell">

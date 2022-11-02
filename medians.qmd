@@ -5,9 +5,8 @@ format:
   html:
     code-copy: true
 editor_options: 
-  chunk_output_type: console
+chunk_output_type: console
 ---
-
 
 ## Background
 
@@ -38,13 +37,25 @@ summary(mle)
 We can compare these parametric estimate with the median survival time from the Kaplan-Meier.
 
 ```{r}
-min(mle$misc$km$time[mle$misc$km$surv < 0.5])
+t_med <- min(mle$misc$km$time[mle$misc$km$surv < 0.5])
+t_low <- min(mle$misc$km$time[mle$misc$km$lower < 0.5])
+t_upp <- min(mle$misc$km$time[mle$misc$km$upper < 0.5])
+
+t_med
 ```
+
+```{r}
+survfit(Surv(recyrs, censrec) ~ 1, data = bc) |> 
+  plot()
+abline(h = 0.5)
+abline(v = c(t_low, t_med, t_upp), lty = c(2,1,2))
+```
+
 
 If we denote the median with $t_{50}$ then to get the medians ourselves we can take the coefficient value from the `fit.model` output and use the fact that
 
 $$
-t_{50} = - log (0.5)/\lambda
+t_{50} = -\log (0.5)/\lambda
 $$
 
 ```{r}
@@ -107,19 +118,19 @@ $$ Which leads to the median $t_{50} = \alpha$, the shape parameter.
 The Gompertz distribution median is
 
 $$
-(1/b)log[(-1/\eta) log(0.5) + 1]
+(1/b) \log[(-1/\eta) \log(0.5) + 1]
 $$
 
 The Weibull distribution median is
 
 $$
-\lambda [- log(0.5)]^{1/k}
+\lambda [- \log(0.5)]^{1/k}
 $$
 
 The log-normal distribution median is
 
 $$
-exp(\mu)
+\exp(\mu)
 $$
 
 The gamma distribution has no simple closed form formula for the median.
@@ -162,11 +173,11 @@ $$
 q_p = \frac{1}{2}(\inf\{t:1−\hat{S}(t) ≥ p\} + \sup\{t:1−\hat{S}(t) ≤ p\})
 $$
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
-                  data = bc,
-                  distr = "exp",
-                  method = "mle")
+data = bc,
+distr = "exp",
+method = "mle")
 
 xx <- make.surv(mle)
 prctile <- 0.75
@@ -176,8 +187,8 @@ prctile <- c(0.975, 0.75, 0.5, 0.25, 0.025)
 prctile_times <- purrr::map_dbl(prctile, ~min(xx$S[[1]]$t[xx$S[[1]]$S < .x]))
 
 plot(mle) + 
-  geom_vline(xintercept = prctile_times) +
-  annotate("text", x = prctile_times + 0.5, y = 0.25, label = prctile)
+geom_vline(xintercept = prctile_times) +
+annotate("text", x = prctile_times + 0.5, y = 0.25, label = prctile)
 ```
 
 ### Compare with Kaplan-Meier

@@ -184,7 +184,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">Introduction to R</a>
   </div>
 </li>
       </ul>
@@ -234,7 +234,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">Parametric modelling</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -244,7 +244,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./external-data.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./external-data.html" class="sidebar-item-text sidebar-link">External data</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -383,9 +383,9 @@ Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
 Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 1: 
-Chain 1:  Elapsed Time: 0.231 seconds (Warm-up)
-Chain 1:                0.217 seconds (Sampling)
-Chain 1:                0.448 seconds (Total)
+Chain 1:  Elapsed Time: 0.258 seconds (Warm-up)
+Chain 1:                0.22 seconds (Sampling)
+Chain 1:                0.478 seconds (Total)
 Chain 1: 
 
 SAMPLING FOR MODEL 'Gompertz' NOW (CHAIN 2).
@@ -408,9 +408,9 @@ Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
 Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 2: 
-Chain 2:  Elapsed Time: 0.621 seconds (Warm-up)
+Chain 2:  Elapsed Time: 0.233 seconds (Warm-up)
 Chain 2:                0.212 seconds (Sampling)
-Chain 2:                0.833 seconds (Total)
+Chain 2:                0.445 seconds (Total)
 Chain 2: </code></pre>
 </div>
 </div>
@@ -458,9 +458,9 @@ Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
 Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 1: 
-Chain 1:  Elapsed Time: 0.402 seconds (Warm-up)
-Chain 1:                0.276 seconds (Sampling)
-Chain 1:                0.678 seconds (Total)
+Chain 1:  Elapsed Time: 0.405 seconds (Warm-up)
+Chain 1:                0.278 seconds (Sampling)
+Chain 1:                0.683 seconds (Total)
 Chain 1: 
 
 SAMPLING FOR MODEL 'Exponential' NOW (CHAIN 2).
@@ -483,9 +483,9 @@ Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
 Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 2: 
-Chain 2:  Elapsed Time: 0.4 seconds (Warm-up)
-Chain 2:                0.267 seconds (Sampling)
-Chain 2:                0.667 seconds (Total)
+Chain 2:  Elapsed Time: 0.462 seconds (Warm-up)
+Chain 2:                0.26 seconds (Sampling)
+Chain 2:                0.722 seconds (Total)
 Chain 2: </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ext_Surv2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(time, event) <span class="sc">~</span> <span class="dv">1</span>,</span>
@@ -514,9 +514,9 @@ Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
 Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 1: 
-Chain 1:  Elapsed Time: 0.142 seconds (Warm-up)
-Chain 1:                0.081 seconds (Sampling)
-Chain 1:                0.223 seconds (Total)
+Chain 1:  Elapsed Time: 0.183 seconds (Warm-up)
+Chain 1:                0.087 seconds (Sampling)
+Chain 1:                0.27 seconds (Total)
 Chain 1: 
 
 SAMPLING FOR MODEL 'Exponential' NOW (CHAIN 2).
@@ -539,9 +539,9 @@ Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
 Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 Chain 2: 
-Chain 2:  Elapsed Time: 0.128 seconds (Warm-up)
-Chain 2:                0.057 seconds (Sampling)
-Chain 2:                0.185 seconds (Total)
+Chain 2:  Elapsed Time: 0.163 seconds (Warm-up)
+Chain 2:                0.09 seconds (Sampling)
+Chain 2:                0.253 seconds (Total)
 Chain 2: </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ble_Surv2 <span class="ot">&lt;-</span> blendR<span class="sc">::</span><span class="fu">blendsurv</span>(obs_Surv2, ext_Surv2, blend_interv, beta_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

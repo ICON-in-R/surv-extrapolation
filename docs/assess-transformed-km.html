@@ -185,7 +185,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">Introduction to R</a>
   </div>
 </li>
       </ul>
@@ -235,7 +235,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">Parametric modelling</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -245,7 +245,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./external-data.html" class="sidebar-item-text sidebar-link">About</a>
+  <a href="./external-data.html" class="sidebar-item-text sidebar-link">External data</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -538,42 +538,20 @@ log H_i(t) = \beta x_i + log H_0(t)
 </div>
 <p>Now we can repeat the above analysis using the <code>plot_transformed_km</code> function. By setting <code>distr = "exp"</code> the cumulative hazard plot is returned.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survHE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: flexsurv</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: dplyr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: ggplot2</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit_exp <span class="ot">&lt;-</span> survHE<span class="sc">::</span><span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> vdata, <span class="at">distr =</span> <span class="st">"exp"</span>, <span class="at">method =</span> <span class="st">"mle"</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_transformed_km</span>(fit_exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survHE)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fit_exp <span class="ot">&lt;-</span> survHE<span class="sc">::</span><span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> vdata, <span class="at">distr =</span> <span class="st">"exp"</span>, <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_transformed_km</span>(fit_exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Setting <code>distr = "weibull"</code> then we get the log-cumulative hazard against log-time plot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fit_wei <span class="ot">&lt;-</span> survHE<span class="sc">::</span><span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> vdata, <span class="at">distr =</span> <span class="st">"weibull"</span>, <span class="at">method =</span> <span class="st">"mle"</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_transformed_km</span>(fit_wei)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_wei <span class="ot">&lt;-</span> survHE<span class="sc">::</span><span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">data =</span> vdata, <span class="at">distr =</span> <span class="st">"weibull"</span>, <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_transformed_km</span>(fit_wei)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -584,15 +562,15 @@ Attaching package: 'dplyr'</code></pre>
 <p>Further, we could use the <code>flexsurv</code> package <span class="citation" data-cites="Jackson2016">(<a href="#ref-Jackson2016" role="doc-biblioref">Jackson 2016</a>)</span>. This package contains lots of functions for a range of survival distributions.</p>
 <p>The cumulative hazard can be plotted with the <code>flexsurv</code> plotting method with argument <code>type = "cumhaz"</code>. The Kaplan-Meier is also overlaid by the model fit.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"flexsurv"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>fs1 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"exp"</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs1, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"flexsurv"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fs1 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"exp"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs1, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fs2 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs2, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fs2 <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs2, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
 </div>
@@ -601,15 +579,15 @@ Attaching package: 'dplyr'</code></pre>
 <section id="using-survhe" class="level3">
 <h3 class="anchored" data-anchor-id="using-survhe">Using <code>survHE</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"survHE"</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>fs1 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"exp"</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs1, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"survHE"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fs1 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"exp"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs1, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fs2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs2, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fs2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="fu">Surv</span>(time1, time2, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> vdata, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fs2, <span class="at">type =</span> <span class="st">"cumhaz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assess-transformed-km_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
 </div>
