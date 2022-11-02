@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "Introduction to R"
 ---
 
 About this site

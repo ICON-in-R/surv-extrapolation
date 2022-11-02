@@ -1,5 +1,5 @@
 ---
-title: "surv-extrapolation"
+title: "Survical curve extrapolation"
 ---
 
 This is a Quarto website.
