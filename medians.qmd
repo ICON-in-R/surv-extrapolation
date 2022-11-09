@@ -1,5 +1,5 @@
 ---
-title: "Medians"
+title: "Median survival time"
 bibliography: references.bib
 format:
   html:
@@ -10,16 +10,18 @@ chunk_output_type: console
 
 ## Background
 
-The length of time from either the date of diagnosis or the start of treatment for a disease, such as cancer, that half of the patients in a group of patients diagnosed with the disease are still alive. In a clinical trial, measuring the median overall survival is one way to see how well a new treatment works. Also called median survival.
+The median survival time is the length of time from either the date of diagnosis or the start of treatment for a disease, such as cancer, that half of the patients in a group of patients diagnosed with the disease are still alive. In a clinical trial, measuring the median overall survival is one way to see how well a new treatment works. Also called median survival.
 
 ::: callout-tip
+The median is useful but it is the expected or mean survival time that is of particular interest for HTA.
 :::
+
 
 ## R Examples
 
-In this example we will see a comparison of survival probabilities at given landmarks as well as the comparison of observed (i.e. based on KM) and predicted medians (using the respective formula to calculate the median for each distribution) based on fitted models for each of the 6 distributions.
+In this example we will see a comparison of survival probabilities at given landmark times as well as the comparison of observed (i.e. based on Kaplan-Meier) and predicted medians (using the respective formula to calculate the median for each distribution) based on fitted models for each of the 6 main distributions we consider.
 
-The summary method for a `survHE` object returns mean survival times, including the median mean survival time.
+The summary method for a `survHE` object from the `survHE` package returns mean survival times, including the median mean survival time (not be be confused with the mean median survival time!). For an exponential model fit with no covariates,
 
 ```{r warning=FALSE, message=FALSE}
 library(survHE)
@@ -34,7 +36,13 @@ mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
 summary(mle)
 ```
 
-We can compare these parametric estimate with the median survival time from the Kaplan-Meier.
+Note that this is calculated over a closed range and not the entire time line.
+
+We can compare these parametric estimate with the median survival time from the Kaplan-Meier. This is available from the `survHE` output in `misc$km` and the equation
+
+$$
+\min \{t : \hat{S}(t) < 0.5 \}
+$$
 
 ```{r}
 t_med <- min(mle$misc$km$time[mle$misc$km$surv < 0.5])
@@ -44,6 +52,22 @@ t_upp <- min(mle$misc$km$time[mle$misc$km$upper < 0.5])
 t_med
 ```
 
+There is clearly some repitition here so we can simplify as follows.
+
+```{r}
+surv_median <- function(S, sname) {
+  min(S[["time"]][S[[sname]] < 0.5])
+}
+
+KM <- mle$misc$km
+
+surv_median(KM, "surv")
+surv_median(KM, "lower")
+surv_median(KM, "upper")
+```
+
+Plotting the Kaplan-Meier we can indicate these median times.
+
 ```{r}
 survfit(Surv(recyrs, censrec) ~ 1, data = bc) |> 
   plot()
@@ -51,8 +75,10 @@ abline(h = 0.5)
 abline(v = c(t_low, t_med, t_upp), lty = c(2,1,2))
 ```
 
+### Direct estimates
 
-If we denote the median with $t_{50}$ then to get the medians ourselves we can take the coefficient value from the `fit.model` output and use the fact that
+If we denote the median with $t_{50}$ then to calculate the medians ourselves we can take the fitted coefficient value from the `fit.model` output and use an inverese of the survival function.
+In the case of the exponential distribution this is
 
 $$
 t_{50} = -\log (0.5)/\lambda
@@ -67,55 +93,15 @@ meantime <- -log(0.5)/exp(rate)
 meantime
 ```
 
-Note that the parameter returned from `fit.model` is the log of the rate. Alternatively, and more general, we can simulate (multiple) survival curves from the coefficient posterior and estimate the median for each of these.
-
-So, sample from the posterior using `make.surv()` from the `survHE` package to get for the single curve case as follows
-
-```{r}
-xx <- make.surv(mle)
-min(xx$S[[1]]$t[xx$S[[1]]$S < 0.5])
-```
-
-It follows that we can do something similar for multiple simulations to obtain uncertainty bounds.
-
-```{r}
-xx <- make.surv(mle, nsim = 100)
-
-# direct estimates
-rtimes <- -log(0.5)/unlist(xx$sim)
-
-# simulated estimates
-t_S <- min(xx$S[[1]]$t[xx$S[[1]]$S < 0.5])
-t_low <- min(xx$S[[1]]$t[xx$S[[1]]$low < 0.5])
-t_upp <- min(xx$S[[1]]$t[xx$S[[1]]$upp < 0.5])
-```
-
-```{r}
-plot(mle) + 
-  geom_vline(xintercept = rtimes, alpha = 0.1, col = "darkgrey", size = 2) +
-  geom_vline(xintercept = meantime) +
-  geom_vline(xintercept = t_low, linetype = 2) +
-  geom_vline(xintercept = t_upp, linetype = 2)
-```
-
-### Multiple distributions
-
-```{r}
-fit2 <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
-                   data = bc,
-                   dist = c("exp", "loglogistic"),
-                   method = "mle")
-
-plot(fit2)
-```
-
 The log-logistic distribution has CDF
 
 $$
 \frac{1}{(1 + (t/\alpha)^{\beta})^2}
-$$ Which leads to the median $t_{50} = \alpha$, the shape parameter.
+$$
 
-The Gompertz distribution median is
+Which leads to the median $t_{50} = \alpha$, i.e. simply the shape parameter.
+
+Similarly, the Gompertz distribution median is
 
 $$
 (1/b) \log[(-1/\eta) \log(0.5) + 1]
@@ -133,25 +119,115 @@ $$
 \exp(\mu)
 $$
 
+
 The gamma distribution has no simple closed form formula for the median.
 
+
+### Simulation-based estimates
+
+Note that the parameter returned from `fit.model` is the log of the rate.
+More generally, we can simulate (multiple) survival curves from the coefficient posterior and estimate the median for each of these.
+So, sample from the posterior using `make.surv()` from the `survHE` package to obtain output for the single curve case as follows.
+
 ```{r}
+surv_exp <- make.surv(mle)
+```
+
+The sampled survival curves from `make.surv()` have slightly different names so let us redefine the median function and then extract the median times.
+
+```{r}
+surv_median <- function(S, sname) {
+  min(S[["t"]][S[[sname]] < 0.5])
+}
+
+surv <- surv_exp$S[[1]]
+
+surv_median(surv, "S")
+```
+
+It follows that we can do something similar for multiple simulations to obtain uncertainty bounds.
+Repeating the above but for 100 simulations,
+
+```{r}
+sim100 <- make.surv(mle, nsim = 100)
+```
+
+direct estimates are
+
+```{r}
+rtimes <- -log(0.5)/unlist(sim100$sim)
+rtimes
+```
+
+and simulated estimates
+
+```{r warning=FALSE, message=FALSE}
+surv <- sim100$S[[1]]
+
+t_S <- surv_median(surv, "S")
+t_low <- surv_median(surv, "low")
+t_upp <- surv_median(surv, "upp")
+
+t_S
+```
+
+The plot with all samples of medians is,
+
+```{r}
+plot(mle) + 
+  geom_vline(xintercept = rtimes, alpha = 0.1, col = "darkgrey", size = 2) +
+  geom_vline(xintercept = meantime) +
+  geom_vline(xintercept = t_low, linetype = 2) +
+  geom_vline(xintercept = t_upp, linetype = 2)
+```
+
+
+### Multiple distributions
+
+In the same way as for a single distribution, we can extend the analysis for multiple distributions at the same time.
+We show this for exponential and log-logistic distributions.
+First, fit the models and show the survival curves.
+
+```{r warning=FALSE, message=FALSE}
+fit2 <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
+                   data = bc,
+                   dist = c("exp", "loglogistic"),
+                   method = "mle")
+
+plot(fit2)
+```
+
+Then, sample the survival curves and rearrange so that its straightforward to use the data in the same way as above.
+
+```{r warning=FALSE, message=FALSE}
+NSIM <- 100
 sim <- list()
-sim[[1]] <- make.surv(fit2, mod = 1, nsim = 100)
-sim[[2]] <- make.surv(fit2, mod = 2, nsim = 100)
+sim[[1]] <- make.surv(fit2, mod = 1, nsim = NSIM)
+sim[[2]] <- make.surv(fit2, mod = 2, nsim = NSIM)
 
 sim <- purrr::transpose(sim)
+```
 
-# direct estimates
+We can then get the direct estimates,
+
+```{r warning=FALSE, message=FALSE}
 rtimes <- list()
 rtimes[[1]] <- -log(0.5)/sim$sim[[1]][[1]][, "rate"]
 rtimes[[2]] <- sim$sim[[2]][[1]][, "scale"]
 
-# simulated estimates
-t_S <- purrr::map_dbl(sim$S, ~ min(.x[[1]]$t[.x[[1]]$S < 0.5]))
-t_low <- purrr::map_dbl(sim$S, ~ min(.x[[1]]$t[.x[[1]]$low < 0.5]))
-t_upp <- purrr::map_dbl(sim$S, ~ min(.x[[1]]$t[.x[[1]]$upp < 0.5]))
+rtimes
 ```
+
+and the sampled estimates,
+
+```{r warning=FALSE, message=FALSE}
+# simulated estimates
+t_S <- purrr::map_dbl(sim$S, ~ surv_median(.x[[1]], "S"))
+t_low <- purrr::map_dbl(sim$S, ~ surv_median(.x[[1]], "low"))
+t_upp <- purrr::map_dbl(sim$S, ~ surv_median(.x[[1]], "upp"))
+```
+
+Plotting the two sets of medians we can see the location and spread for both distributions together.
 
 ```{r}
 plot(fit2) + 
@@ -165,60 +241,165 @@ plot(fit2) +
   geom_vline(xintercept = t_upp[[2]], linetype = 3)
 ```
 
+
 ### Multiple percentiles
 
 A general formula for the $p$th sample percentile of the survival time distribution is computed as
 
 $$
-q_p = \frac{1}{2}(\inf\{t:1−\hat{S}(t) ≥ p\} + \sup\{t:1−\hat{S}(t) ≤ p\})
+t_p = \frac{1}{2} \left( \min\{t:1−\hat{S}(t) ≥ p\} + \max\{t:1−\hat{S}(t) ≤ p\} \right)
 $$
+
+So, analogous to the median only example above, let us fit an exponential distribution.
 
 ```{r warning=FALSE, message=FALSE}
 mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
-data = bc,
-distr = "exp",
-method = "mle")
-
-xx <- make.surv(mle)
-prctile <- 0.75
-min(xx$S[[1]]$t[xx$S[[1]]$S < prctile])
-
-prctile <- c(0.975, 0.75, 0.5, 0.25, 0.025)
-prctile_times <- purrr::map_dbl(prctile, ~min(xx$S[[1]]$t[xx$S[[1]]$S < .x]))
-
-plot(mle) + 
-geom_vline(xintercept = prctile_times) +
-annotate("text", x = prctile_times + 0.5, y = 0.25, label = prctile)
-```
-
-### Compare with Kaplan-Meier
-
-histograms of median posteriors for each distribution with KM point value, for different percentiles.
-
-IDEA: this feels like posterior predictive checking thats already in rstan? so what if, rather than sample parameters and fit curve for a given distribution, we sample parameter then sample cohort survival times then fit KM then obtain medians from this? This then would contain the individual level variability as well as the parameter uncertainty...
-
-```{r}
-
-```
-
-### Multiple groups
-
-```{r}
-# Fits the same model using the 3 inference methods
-mle <- fit.models(formula = Surv(recyrs,censrec) ~ group,
                   data = bc,
                   distr = "exp",
                   method = "mle")
-mle
 
-xx <- make.surv(mle)
-
-purrr::map_dbl(xx$S, ~ min(.x$t[.x$S < 0.5]))
-
-rate <- mle$models$Exponential$coefficients
-
-meantime <- -log(0.5)/rate
-
-
-## plots
+surv <- make.surv(mle, nsim = NSIM)
 ```
+
+We can extend the `surv_median` function by creating a _function factory_ which we can use to create equivalent functions for different percentiles.
+
+```{r warning=FALSE, message=FALSE}
+surv_percentile <- function(p) {
+  force(p)
+  function(S, sname)
+    min(S[["t"]][S[[sname]] < p])
+}
+
+surv_median <- surv_percentile(0.5)
+surv_median(surv$S[[1]], "S")
+```
+
+Now we can automatically create functions for all the percentiles of interest by mapping over the vector of probabilities, which returns a list of functions.
+
+```{r warning=FALSE, message=FALSE}
+prctile <- c("97.5" = 0.975, "75" = 0.75, "50" = 0.5, "25" = 0.25, "2.5" = 0.025)
+
+p_fns <- purrr::map(prctile, surv_percentile)
+
+head(p_fns)
+```
+
+Equivalent to what we did with just the median function we can do the same with the list of percentile functions.
+
+```{r warning=FALSE, message=FALSE}
+simdat <- surv$S[[1]]
+
+# example for median i.e. 50% percentile
+p_fns$`50`(simdat, "S")
+
+e_times <- purrr::map_dbl(p_fns, ~ do.call(.x, list(simdat, "S")))
+upp_times <- purrr::map_dbl(p_fns, ~ do.call(.x, list(simdat, "upp")))
+low_times <- purrr::map_dbl(p_fns, ~ do.call(.x, list(simdat, "low")))
+```
+
+We can plot all of the percentile times with error bounds as follows.
+
+```{r warning=FALSE, message=FALSE}
+plot(mle) + 
+  geom_vline(xintercept = e_times) +
+  geom_vline(xintercept = upp_times, linetype = 2) +
+  geom_vline(xintercept = low_times, linetype = 2) +
+  annotate("text", x = e_times + 0.5, y = 0.25, label = prctile)
+```
+
+
+### Comparing between all distribution fits and Kaplan-Meier
+
+In this section we bring together various things from previous sections.
+We will do an analysis for all 6 main distributions at the same time and for several percentiles.
+
+First, we fit all of the models and then generate the sample of survival curves.
+
+```{r warning=FALSE, message=FALSE}
+dist_names <- c("exponential", "weibull", "gompertz", "loglogistic", "lognormal", "gengamma")
+
+mle <- fit.models(formula = Surv(recyrs, censrec) ~ 1,
+                  data = bc,
+                  distr = dist_names,
+                  method = "mle")
+
+surv <- purrr::map(setNames(1:6, dist_names), ~ make.surv(mle, mod = .x, nsim = NSIM))
+```
+
+Now, for each distribution we calculate the survival times at each chosen percentile.
+
+```{r warning=FALSE, message=FALSE}
+times <- list()
+
+for (i in dist_names) {
+  simdat <- surv[[i]]$S[[1]]
+  times[[i]] <- purrr::map_dbl(p_fns, ~ do.call(.x, list(simdat, "S")))
+}
+```
+
+Finally, we can plot the results, including the Kaplan-Meier estimates.
+
+```{r warning=FALSE, message=FALSE}
+library(scales)
+
+## ggplot2 default colours
+cols <- hue_pal()(6)
+km_dat <- mle$misc$km
+  
+t_km <- purrr::map_dbl(prctile, ~min(km_dat$time[km_dat$surv < .x]))
+
+plot(mle) + 
+  purrr::map(seq_along(times), ~ geom_vline(xintercept = times[[.x]], col = cols[.x])) +
+  geom_vline(xintercept = t_km, size = 1.5, linetype = 2)
+```
+
+We haven't included the upper and lower bound here because the plot would be too busy but it is trivial to extend the code above to do this.
+
+Let us create a table of these percentile outputs too.
+
+```{r}
+tab <- t(do.call(rbind, times))
+tab <- cbind(tab, Observed = t_km)
+
+knitr::kable(round(tab, 2))
+```
+
+
+### Survival probabilities at given times
+
+We can flip the analysis around and instead obtain survival probabilities at user-defined time points.
+
+The code looks veery similar to the percentile case above.
+
+```{r warning=FALSE, message=FALSE}
+t_pt <- c(1,2,5)
+
+S_est <- list()
+
+for (i in dist_names) {
+  simdat <- surv[[i]]$S[[1]]
+  S_est[[i]] <- purrr::map_dbl(t_pt, ~min(simdat$S[simdat$t < .x]))
+}
+```
+
+```{r warning=FALSE, message=FALSE}
+km_dat <- mle$misc$km
+t_km <- purrr::map_dbl(t_pt, ~min(km_dat$surv[km_dat$time < .x]))
+
+plot(mle) + 
+  purrr::map(seq_along(S_est), ~ geom_hline(yintercept = S_est[[.x]], col = cols[.x])) +
+  geom_vline(xintercept = t_pt) +
+  geom_hline(yintercept = t_km, size = 1.5, linetype = 2)
+```
+
+Let us create a table of these survival probabilities as percentages.
+
+```{r}
+tab <- t(do.call(rbind, S_est))
+tab <- cbind(time = t_pt, tab*100, Observed = t_km*100)
+
+knitr::kable(round(tab, 0))
+```
+
+
+

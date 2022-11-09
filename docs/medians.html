@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Survival curve extrapolation - Medians</title>
+<title>Survival curve extrapolation - Median survival time</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -128,7 +128,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Medians</h1>
+      <h1 class="quarto-secondary-nav-title">Median survival time</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -231,7 +231,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./medians.html" class="sidebar-item-text sidebar-link active">Medians</a>
+  <a href="./medians.html" class="sidebar-item-text sidebar-link active">Median survival time</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -255,10 +255,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#multiple-distributions" id="toc-multiple-distributions" class="nav-link active" data-scroll-target="#multiple-distributions">Multiple distributions</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a></li>
+  <li><a href="#r-examples" id="toc-r-examples" class="nav-link" data-scroll-target="#r-examples">R Examples</a>
+  <ul class="collapse">
+  <li><a href="#direct-estimates" id="toc-direct-estimates" class="nav-link" data-scroll-target="#direct-estimates">Direct estimates</a></li>
+  <li><a href="#simulation-based-estimates" id="toc-simulation-based-estimates" class="nav-link" data-scroll-target="#simulation-based-estimates">Simulation-based estimates</a></li>
+  <li><a href="#multiple-distributions" id="toc-multiple-distributions" class="nav-link" data-scroll-target="#multiple-distributions">Multiple distributions</a></li>
   <li><a href="#multiple-percentiles" id="toc-multiple-percentiles" class="nav-link" data-scroll-target="#multiple-percentiles">Multiple percentiles</a></li>
-  <li><a href="#compare-with-kaplan-meier" id="toc-compare-with-kaplan-meier" class="nav-link" data-scroll-target="#compare-with-kaplan-meier">Compare with Kaplan-Meier</a></li>
-  <li><a href="#multiple-groups" id="toc-multiple-groups" class="nav-link" data-scroll-target="#multiple-groups">Multiple groups</a></li>
+  <li><a href="#comparing-between-all-distribution-fits-and-kaplan-meier" id="toc-comparing-between-all-distribution-fits-and-kaplan-meier" class="nav-link" data-scroll-target="#comparing-between-all-distribution-fits-and-kaplan-meier">Comparing between all distribution fits and Kaplan-Meier</a></li>
+  <li><a href="#survival-probabilities-at-given-times" id="toc-survival-probabilities-at-given-times" class="nav-link" data-scroll-target="#survival-probabilities-at-given-times">Survival probabilities at given times</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/n8thangreen/edit/main/medians.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/n8thangreen/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -267,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Medians</h1>
+<h1 class="title d-none d-lg-block">Median survival time</h1>
 </div>
 
 
@@ -281,8 +287,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>## Background</p>
-<p>The length of time from either the date of diagnosis or the start of treatment for a disease, such as cancer, that half of the patients in a group of patients diagnosed with the disease are still alive. In a clinical trial, measuring the median overall survival is one way to see how well a new treatment works. Also called median survival.</p>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>The median survival time is the length of time from either the date of diagnosis or the start of treatment for a disease, such as cancer, that half of the patients in a group of patients diagnosed with the disease are still alive. In a clinical trial, measuring the median overall survival is one way to see how well a new treatment works. Also called median survival.</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -293,12 +300,14 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-
+<p>The median is useful but it is the expected or mean survival time that is of particular interest for HTA.</p>
 </div>
 </div>
-<p>## R Examples</p>
-<p>In this example we will see a comparison of survival probabilities at given landmarks as well as the comparison of observed (i.e.&nbsp;based on KM) and predicted medians (using the respective formula to calculate the median for each distribution) based on fitted models for each of the 6 distributions.</p>
-<p>The summary method for a <code>survHE</code> object returns mean survival times, including the median mean survival time.</p>
+</section>
+<section id="r-examples" class="level2">
+<h2 class="anchored" data-anchor-id="r-examples">R Examples</h2>
+<p>In this example we will see a comparison of survival probabilities at given landmark times as well as the comparison of observed (i.e.&nbsp;based on Kaplan-Meier) and predicted medians (using the respective formula to calculate the median for each distribution) based on fitted models for each of the 6 main distributions we consider.</p>
+<p>The summary method for a <code>survHE</code> object from the <code>survHE</code> package returns mean survival times, including the median mean survival time (not be be confused with the mean median survival time!). For an exponential model fit with no covariates,</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survHE)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -313,14 +322,18 @@ Tip
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Estimated average survival time distribution* 
-     mean        sd     2.5%   median    97.5%
- 4.522156 0.1145994 4.299454 4.523347 4.735489
+     mean        sd    2.5%   median    97.5%
+ 4.517346 0.1119987 4.27808 4.524495 4.725423
 
 *Computed over the range: [0.02192-7.28493] using 1000 simulations.
 NB: Check that the survival curves tend to 0 over this range!</code></pre>
 </div>
 </div>
-<p>We can compare these parametric estimate with the median survival time from the Kaplan-Meier.</p>
+<p>Note that this is calculated over a closed range and not the entire time line.</p>
+<p>We can compare these parametric estimate with the median survival time from the Kaplan-Meier. This is available from the <code>survHE</code> output in <code>misc$km</code> and the equation</p>
+<p><span class="math display">\[
+\min \{t : \hat{S}(t) &lt; 0.5 \}
+\]</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>t_med <span class="ot">&lt;-</span> <span class="fu">min</span>(mle<span class="sc">$</span>misc<span class="sc">$</span>km<span class="sc">$</span>time[mle<span class="sc">$</span>misc<span class="sc">$</span>km<span class="sc">$</span>surv <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>t_low <span class="ot">&lt;-</span> <span class="fu">min</span>(mle<span class="sc">$</span>misc<span class="sc">$</span>km<span class="sc">$</span>time[mle<span class="sc">$</span>misc<span class="sc">$</span>km<span class="sc">$</span>lower <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
@@ -331,117 +344,225 @@ NB: Check that the survival curves tend to 0 over this range!</code></pre>
 <pre><code>[1] 4.950685</code></pre>
 </div>
 </div>
+<p>There is clearly some repitition here so we can simplify as follows.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survfit</span>(<span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> bc) <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.5</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">c</span>(t_low, t_med, t_upp), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="medians_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>If we denote the median with <span class="math inline">\(t_{50}\)</span> then to get the medians ourselves we can take the coefficient value from the <code>fit.model</code> output and use the fact that</p>
-<p><span class="math display">\[
-  t_{50} = -\log (0.5)/\lambda
-\]</span></p>
-<p>::: {.cell}</p>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rate <span class="ot">&lt;-</span> mle<span class="sc">$</span>models<span class="sc">$</span>Exponential<span class="sc">$</span>coefficients</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(rate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>::: {.cell-output .cell-output-stdout} <code>[1] 0.1414765</code> :::</p>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># closed form</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>meantime <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span><span class="fu">exp</span>(rate)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>meantime</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>::: {.cell-output .cell-output-stdout} <code>[1] 4.899379</code> ::: :::</p>
-<p>Note that the parameter returned from <code>fit.model</code> is the log of the rate. Alternatively, and more general, we can simulate (multiple) survival curves from the coefficient posterior and estimate the median for each of these.</p>
-<p>So, sample from the posterior using <code>make.surv()</code> from the <code>survHE</code> package to get for the single curve case as follows</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>t[xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>S <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>surv_median <span class="ot">&lt;-</span> <span class="cf">function</span>(S, sname) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(S[[<span class="st">"time"</span>]][S[[sname]] <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>KM <span class="ot">&lt;-</span> mle<span class="sc">$</span>misc<span class="sc">$</span>km</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">surv_median</span>(KM, <span class="st">"surv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.893151</code></pre>
+<pre><code>[1] 4.950685</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">surv_median</span>(KM, <span class="st">"lower"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.347945</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">surv_median</span>(KM, <span class="st">"upper"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.561644</code></pre>
 </div>
 </div>
-<p>It follows that we can do something similar for multiple simulations to obtain uncertainty bounds.</p>
+<p>Plotting the Kaplan-Meier we can indicate these median times.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle, <span class="at">nsim =</span> <span class="dv">100</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># direct estimates</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>rtimes <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span><span class="fu">unlist</span>(xx<span class="sc">$</span>sim)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated estimates</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>t_S <span class="ot">&lt;-</span> <span class="fu">min</span>(xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>t[xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>S <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>t_low <span class="ot">&lt;-</span> <span class="fu">min</span>(xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>t[xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>low <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>t_upp <span class="ot">&lt;-</span> <span class="fu">min</span>(xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>t[xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>upp <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> rtimes, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"darkgrey"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> meantime) <span class="sc">+</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_low, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_upp, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survfit</span>(<span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> bc) <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.5</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">c</span>(t_low, t_med, t_upp), <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="medians_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="medians_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<section id="multiple-distributions" class="level3">
-<h3 class="anchored" data-anchor-id="multiple-distributions">Multiple distributions</h3>
+<section id="direct-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="direct-estimates">Direct estimates</h3>
+<p>If we denote the median with <span class="math inline">\(t_{50}\)</span> then to calculate the medians ourselves we can take the fitted coefficient value from the <code>fit.model</code> output and use an inverese of the survival function. In the case of the exponential distribution this is</p>
+<p><span class="math display">\[
+t_{50} = -\log (0.5)/\lambda
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> bc,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dist =</span> <span class="fu">c</span>(<span class="st">"exp"</span>, <span class="st">"loglogistic"</span>),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method =</span> <span class="st">"mle"</span>)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="medians_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rate <span class="ot">&lt;-</span> mle<span class="sc">$</span>models<span class="sc">$</span>Exponential<span class="sc">$</span>coefficients</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(rate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1414765</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># closed form</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>meantime <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span><span class="fu">exp</span>(rate)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>meantime</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.899379</code></pre>
 </div>
 </div>
 <p>The log-logistic distribution has CDF</p>
 <p><span class="math display">\[
-  \frac{1}{(1 + (t/\alpha)^{\beta})^2}
-\]</span> Which leads to the median <span class="math inline">\(t_{50} = \alpha\)</span>, the shape parameter.</p>
-<p>The Gompertz distribution median is</p>
+\frac{1}{(1 + (t/\alpha)^{\beta})^2}
+\]</span></p>
+<p>Which leads to the median <span class="math inline">\(t_{50} = \alpha\)</span>, i.e.&nbsp;simply the shape parameter.</p>
+<p>Similarly, the Gompertz distribution median is</p>
 <p><span class="math display">\[
-  (1/b) \log[(-1/\eta) \log(0.5) + 1]
+(1/b) \log[(-1/\eta) \log(0.5) + 1]
 \]</span></p>
 <p>The Weibull distribution median is</p>
 <p><span class="math display">\[
-  \lambda [- \log(0.5)]^{1/k}
+\lambda [- \log(0.5)]^{1/k}
 \]</span></p>
 <p>The log-normal distribution median is</p>
 <p><span class="math display">\[
-  \exp(\mu)
+\exp(\mu)
 \]</span></p>
 <p>The gamma distribution has no simple closed form formula for the median.</p>
+</section>
+<section id="simulation-based-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="simulation-based-estimates">Simulation-based estimates</h3>
+<p>Note that the parameter returned from <code>fit.model</code> is the log of the rate. More generally, we can simulate (multiple) survival curves from the coefficient posterior and estimate the median for each of these. So, sample from the posterior using <code>make.surv()</code> from the <code>survHE</code> package to obtain output for the single curve case as follows.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sim[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(fit2, <span class="at">mod =</span> <span class="dv">1</span>, <span class="at">nsim =</span> <span class="dv">100</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>sim[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(fit2, <span class="at">mod =</span> <span class="dv">2</span>, <span class="at">nsim =</span> <span class="dv">100</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">transpose</span>(sim)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># direct estimates</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>rtimes <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>rtimes[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span>sim<span class="sc">$</span>sim[[<span class="dv">1</span>]][[<span class="dv">1</span>]][, <span class="st">"rate"</span>]</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>rtimes[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> sim<span class="sc">$</span>sim[[<span class="dv">2</span>]][[<span class="dv">1</span>]][, <span class="st">"scale"</span>]</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated estimates</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>t_S <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(sim<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">min</span>(.x[[<span class="dv">1</span>]]<span class="sc">$</span>t[.x[[<span class="dv">1</span>]]<span class="sc">$</span>S <span class="sc">&lt;</span> <span class="fl">0.5</span>]))</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>t_low <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(sim<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">min</span>(.x[[<span class="dv">1</span>]]<span class="sc">$</span>t[.x[[<span class="dv">1</span>]]<span class="sc">$</span>low <span class="sc">&lt;</span> <span class="fl">0.5</span>]))</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>t_upp <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(sim<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">min</span>(.x[[<span class="dv">1</span>]]<span class="sc">$</span>t[.x[[<span class="dv">1</span>]]<span class="sc">$</span>upp <span class="sc">&lt;</span> <span class="fl">0.5</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>surv_exp <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>The sampled survival curves from <code>make.surv()</code> have slightly different names so let us redefine the median function and then extract the median times.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit2) <span class="sc">+</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> rtimes[[<span class="dv">1</span>]], <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"pink"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> rtimes[[<span class="dv">2</span>]], <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_S[[<span class="dv">1</span>]]) <span class="sc">+</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_low[[<span class="dv">1</span>]], <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_upp[[<span class="dv">1</span>]], <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_S[[<span class="dv">2</span>]]) <span class="sc">+</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_low[[<span class="dv">2</span>]], <span class="at">linetype =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_upp[[<span class="dv">2</span>]], <span class="at">linetype =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>surv_median <span class="ot">&lt;-</span> <span class="cf">function</span>(S, sname) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(S[[<span class="st">"t"</span>]][S[[sname]] <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>surv <span class="ot">&lt;-</span> surv_exp<span class="sc">$</span>S[[<span class="dv">1</span>]]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">surv_median</span>(surv, <span class="st">"S"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.893151</code></pre>
+</div>
+</div>
+<p>It follows that we can do something similar for multiple simulations to obtain uncertainty bounds. Repeating the above but for 100 simulations,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sim100 <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle, <span class="at">nsim =</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>direct estimates are</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rtimes <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span><span class="fu">unlist</span>(sim100<span class="sc">$</span>sim)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rtimes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 5.030977 4.860997 5.252989 4.518656 4.799633 5.155153 5.058485 5.045317
+  [9] 4.674038 4.590355 5.082505 4.817995 5.004585 4.345927 5.234568 4.935574
+ [17] 5.289443 4.937837 5.136835 5.397261 4.991506 4.687472 4.441882 5.297241
+ [25] 4.979869 4.921964 5.291105 4.810240 4.932064 4.582963 4.832290 4.782677
+ [33] 5.181210 4.676762 4.737412 4.864239 4.748428 4.943325 4.486343 5.128842
+ [41] 5.043965 5.019482 5.262224 4.931228 5.050934 5.195667 5.225034 4.822411
+ [49] 4.898454 4.915956 4.891791 4.525586 4.322594 4.706158 4.779160 4.541179
+ [57] 4.455202 4.608087 4.958289 4.778545 4.941223 4.493003 5.070293 4.827053
+ [65] 4.877539 4.613147 4.916051 5.140611 4.687538 4.914277 5.097975 4.678640
+ [73] 4.889496 4.663478 4.903244 4.632844 4.085452 4.907163 4.561742 4.876387
+ [81] 4.538998 5.104637 5.261416 4.834354 5.296088 4.794037 5.092592 4.717819
+ [89] 5.300351 4.884407 4.896563 5.158070 4.990269 4.862905 4.982634 4.404314
+ [97] 5.077803 5.287934 5.649222 5.019902</code></pre>
+</div>
+</div>
+<p>and simulated estimates</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>surv <span class="ot">&lt;-</span> sim100<span class="sc">$</span>S[[<span class="dv">1</span>]]</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>t_S <span class="ot">&lt;-</span> <span class="fu">surv_median</span>(surv, <span class="st">"S"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>t_low <span class="ot">&lt;-</span> <span class="fu">surv_median</span>(surv, <span class="st">"low"</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>t_upp <span class="ot">&lt;-</span> <span class="fu">surv_median</span>(surv, <span class="st">"upp"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>t_S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.893151</code></pre>
+</div>
+</div>
+<p>The plot with all samples of medians is,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> rtimes, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"darkgrey"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> meantime) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_low, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_upp, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="medians_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="medians_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="multiple-distributions" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-distributions">Multiple distributions</h3>
+<p>In the same way as for a single distribution, we can extend the analysis for multiple distributions at the same time. We show this for exponential and log-logistic distributions. First, fit the models and show the survival curves.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> bc,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dist =</span> <span class="fu">c</span>(<span class="st">"exp"</span>, <span class="st">"loglogistic"</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="medians_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Then, sample the survival curves and rearrange so that its straightforward to use the data in the same way as above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>NSIM <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>sim[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(fit2, <span class="at">mod =</span> <span class="dv">1</span>, <span class="at">nsim =</span> NSIM)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>sim[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(fit2, <span class="at">mod =</span> <span class="dv">2</span>, <span class="at">nsim =</span> NSIM)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">transpose</span>(sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can then get the direct estimates,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rtimes <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>rtimes[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span>sim<span class="sc">$</span>sim[[<span class="dv">1</span>]][[<span class="dv">1</span>]][, <span class="st">"rate"</span>]</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>rtimes[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> sim<span class="sc">$</span>sim[[<span class="dv">2</span>]][[<span class="dv">1</span>]][, <span class="st">"scale"</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>rtimes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+  [1] 4.785691 4.773674 4.724659 4.169345 4.872511 4.646455 4.887068 4.809442
+  [9] 4.803092 5.132489 4.947968 4.806153 4.940416 4.788849 4.600579 4.797242
+ [17] 4.752358 5.046295 5.056700 4.930276 4.718069 4.754700 4.811955 4.786615
+ [25] 4.420308 5.279533 4.965886 5.085997 5.303584 4.781336 4.535886 4.459000
+ [33] 4.940053 4.626905 4.994843 5.284709 4.620484 5.249167 5.610395 4.282181
+ [41] 4.878309 5.084752 4.971148 4.679309 5.334013 4.789652 4.387141 4.536155
+ [49] 5.284586 4.559396 4.392254 5.134116 5.050669 4.557677 5.055830 4.967826
+ [57] 4.791461 4.893359 4.651476 4.781939 5.300166 5.219971 5.145551 5.045186
+ [65] 5.158304 4.545387 5.596427 4.560900 4.899184 4.923309 4.868401 4.902518
+ [73] 4.888902 4.854930 5.358622 5.437532 5.014616 4.865152 5.379231 4.667421
+ [81] 4.729015 5.090545 5.113333 4.666649 5.291319 4.920715 4.700209 5.086914
+ [89] 5.255839 4.593132 4.697289 4.906682 5.063687 4.543472 5.146893 5.216049
+ [97] 5.370036 5.054706 4.988012 4.988741
+
+[[2]]
+  [1] 4.686934 4.443468 4.164848 4.787431 4.429112 4.619603 4.885367 4.461403
+  [9] 4.397005 4.052862 4.277117 4.482872 4.223199 4.580381 4.186790 4.486515
+ [17] 4.485053 4.717372 4.424844 4.174030 4.793633 4.615457 4.260316 4.568796
+ [25] 4.433402 4.688994 4.300801 4.525906 4.142817 4.379025 4.405320 4.362275
+ [33] 4.609253 4.524031 4.599876 4.576962 4.979010 4.348849 4.237348 4.509658
+ [41] 4.280489 5.057910 4.257423 4.463721 4.002849 4.462267 4.325352 5.008261
+ [49] 4.711156 4.269269 4.347390 5.009185 4.171342 4.296398 4.027459 4.377073
+ [57] 4.911544 4.454419 4.324823 4.923518 4.658023 4.643688 4.704392 4.524859
+ [65] 4.387345 4.380771 4.570652 4.540388 4.562887 4.522572 4.751014 4.570938
+ [73] 4.427822 4.723791 4.122711 4.555768 4.319784 4.709845 4.121744 4.712118
+ [81] 4.779979 4.679062 4.238908 4.491942 4.599347 4.705663 4.280723 4.239860
+ [89] 4.499630 4.472964 4.582056 4.567836 4.480996 4.642663 4.564446 4.807256
+ [97] 4.065935 4.377016 5.196162 4.504275</code></pre>
+</div>
+</div>
+<p>and the sampled estimates,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated estimates</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>t_S <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(sim<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">surv_median</span>(.x[[<span class="dv">1</span>]], <span class="st">"S"</span>))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>t_low <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(sim<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">surv_median</span>(.x[[<span class="dv">1</span>]], <span class="st">"low"</span>))</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>t_upp <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(sim<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">surv_median</span>(.x[[<span class="dv">1</span>]], <span class="st">"upp"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Plotting the two sets of medians we can see the location and spread for both distributions together.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit2) <span class="sc">+</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> rtimes[[<span class="dv">1</span>]], <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"pink"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> rtimes[[<span class="dv">2</span>]], <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_S[[<span class="dv">1</span>]]) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_low[[<span class="dv">1</span>]], <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_upp[[<span class="dv">1</span>]], <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_S[[<span class="dv">2</span>]]) <span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_low[[<span class="dv">2</span>]], <span class="at">linetype =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_upp[[<span class="dv">2</span>]], <span class="at">linetype =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="medians_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -449,75 +570,316 @@ NB: Check that the survival curves tend to 0 over this range!</code></pre>
 <h3 class="anchored" data-anchor-id="multiple-percentiles">Multiple percentiles</h3>
 <p>A general formula for the <span class="math inline">\(p\)</span>th sample percentile of the survival time distribution is computed as</p>
 <p><span class="math display">\[
-  q_p = \frac{1}{2}(\inf\{t:1−\hat{S}(t) ≥ p\} + \sup\{t:1−\hat{S}(t) ≤ p\})
+t_p = \frac{1}{2} \left( \min\{t:1−\hat{S}(t) ≥ p\} + \max\{t:1−\hat{S}(t) ≤ p\} \right)
 \]</span></p>
-<p>::: {.cell}</p>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> bc,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">distr =</span> <span class="st">"exp"</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">"mle"</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>prctile <span class="ot">&lt;-</span> <span class="fl">0.75</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>t[xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>S <span class="sc">&lt;</span> prctile])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>::: {.cell-output .cell-output-stdout} <code>[1] 2.032877</code> :::</p>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>prctile <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.975</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="fl">0.025</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>prctile_times <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(prctile, <span class="sc">~</span><span class="fu">min</span>(xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>t[xx<span class="sc">$</span>S[[<span class="dv">1</span>]]<span class="sc">$</span>S <span class="sc">&lt;</span> .x]))</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_vline</span>(<span class="at">xintercept =</span> prctile_times) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> prctile_times <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.25</span>, <span class="at">label =</span> prctile)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>::: {.cell-output-display} <img src="medians_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"> ::: :::</p>
-</section>
-<section id="compare-with-kaplan-meier" class="level3">
-<h3 class="anchored" data-anchor-id="compare-with-kaplan-meier">Compare with Kaplan-Meier</h3>
-<p>histograms of median posteriors for each distribution with KM point value, for different percentiles.</p>
-<p>IDEA: this feels like posterior predictive checking thats already in rstan? so what if, rather than sample parameters and fit curve for a given distribution, we sample parameter then sample cohort survival times then fit KM then obtain medians from this? This then would contain the individual level variability as well as the parameter uncertainty…</p>
+<p>So, analogous to the median only example above, let us fit an exponential distribution.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> bc,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">distr =</span> <span class="st">"exp"</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>surv <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle, <span class="at">nsim =</span> NSIM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can extend the <code>surv_median</code> function by creating a <em>function factory</em> which we can use to create equivalent functions for different percentiles.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>surv_percentile <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">force</span>(p)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(S, sname)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">min</span>(S[[<span class="st">"t"</span>]][S[[sname]] <span class="sc">&lt;</span> p])</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>surv_median <span class="ot">&lt;-</span> <span class="fu">surv_percentile</span>(<span class="fl">0.5</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">surv_median</span>(surv<span class="sc">$</span>S[[<span class="dv">1</span>]], <span class="st">"S"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.947945</code></pre>
+</div>
+</div>
+<p>Now we can automatically create functions for all the percentiles of interest by mapping over the vector of probabilities, which returns a list of functions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>prctile <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"97.5"</span> <span class="ot">=</span> <span class="fl">0.975</span>, <span class="st">"75"</span> <span class="ot">=</span> <span class="fl">0.75</span>, <span class="st">"50"</span> <span class="ot">=</span> <span class="fl">0.5</span>, <span class="st">"25"</span> <span class="ot">=</span> <span class="fl">0.25</span>, <span class="st">"2.5"</span> <span class="ot">=</span> <span class="fl">0.025</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>p_fns <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(prctile, surv_percentile)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(p_fns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`97.5`
+function(S, sname)
+    min(S[["t"]][S[[sname]] &lt; p])
+&lt;bytecode: 0x00000252edba80c8&gt;
+&lt;environment: 0x00000252edf48270&gt;
 
+$`75`
+function(S, sname)
+    min(S[["t"]][S[[sname]] &lt; p])
+&lt;bytecode: 0x00000252edba80c8&gt;
+&lt;environment: 0x00000252edb7e6f0&gt;
+
+$`50`
+function(S, sname)
+    min(S[["t"]][S[[sname]] &lt; p])
+&lt;bytecode: 0x00000252edba80c8&gt;
+&lt;environment: 0x00000252edb7e9c8&gt;
+
+$`25`
+function(S, sname)
+    min(S[["t"]][S[[sname]] &lt; p])
+&lt;bytecode: 0x00000252edba80c8&gt;
+&lt;environment: 0x00000252edb7eca0&gt;
+
+$`2.5`
+function(S, sname)
+    min(S[["t"]][S[[sname]] &lt; p])
+&lt;bytecode: 0x00000252edba80c8&gt;
+&lt;environment: 0x00000252edb7ef78&gt;</code></pre>
+</div>
+</div>
+<p>Equivalent to what we did with just the median function we can do the same with the list of percentile functions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>simdat <span class="ot">&lt;-</span> surv<span class="sc">$</span>S[[<span class="dv">1</span>]]</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># example for median i.e. 50% percentile</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>p_fns<span class="sc">$</span><span class="st">`</span><span class="at">50</span><span class="st">`</span>(simdat, <span class="st">"S"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.947945</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>e_times <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(p_fns, <span class="sc">~</span> <span class="fu">do.call</span>(.x, <span class="fu">list</span>(simdat, <span class="st">"S"</span>)))</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>upp_times <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(p_fns, <span class="sc">~</span> <span class="fu">do.call</span>(.x, <span class="fu">list</span>(simdat, <span class="st">"upp"</span>)))</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>low_times <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(p_fns, <span class="sc">~</span> <span class="fu">do.call</span>(.x, <span class="fu">list</span>(simdat, <span class="st">"low"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can plot all of the percentile times with error bounds as follows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> e_times) <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> upp_times, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> low_times, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> e_times <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.25</span>, <span class="at">label =</span> prctile)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="medians_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 </section>
-<section id="multiple-groups" class="level3">
-<h3 class="anchored" data-anchor-id="multiple-groups">Multiple groups</h3>
+<section id="comparing-between-all-distribution-fits-and-kaplan-meier" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-between-all-distribution-fits-and-kaplan-meier">Comparing between all distribution fits and Kaplan-Meier</h3>
+<p>In this section we bring together various things from previous sections. We will do an analysis for all 6 main distributions at the same time and for several percentiles.</p>
+<p>First, we fit all of the models and then generate the sample of survival curves.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fits the same model using the 3 inference methods</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs,censrec) <span class="sc">~</span> group,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> bc,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">distr =</span> <span class="st">"exp"</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"mle"</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>mle</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Model fit for the Exponential model, obtained using Flexsurvreg 
-(Maximum Likelihood Estimate). Running time: 0.040 seconds
-
-                 mean         se      L95%      U95%
-rate        0.0603838 0.00845542 0.0458911 0.0794534
-groupMedium 0.8180219 0.17122084 0.4824352 1.1536086
-groupPoor   1.5375232 0.16280169 1.2184378 1.8566087
-
-Model fitting summaries
-Akaike Information Criterion (AIC)....: 1668.212
-Bayesian Information Criterion (BIC)..: 1681.805</code></pre>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>dist_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"exponential"</span>, <span class="st">"weibull"</span>, <span class="st">"gompertz"</span>, <span class="st">"loglogistic"</span>, <span class="st">"lognormal"</span>, <span class="st">"gengamma"</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> <span class="fu">fit.models</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(recyrs, censrec) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> bc,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">distr =</span> dist_names,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"mle"</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>surv <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, dist_names), <span class="sc">~</span> <span class="fu">make.surv</span>(mle, <span class="at">mod =</span> .x, <span class="at">nsim =</span> NSIM))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">make.surv</span>(mle)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map_dbl</span>(xx<span class="sc">$</span>S, <span class="sc">~</span> <span class="fu">min</span>(.x<span class="sc">$</span>t[.x<span class="sc">$</span>S <span class="sc">&lt;</span> <span class="fl">0.5</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in min(.x$t[.x$S &lt; 0.5]): no non-missing arguments to min; returning Inf</code></pre>
+<p>Now, for each distribution we calculate the survival times at each chosen percentile.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> dist_names) {</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  simdat <span class="ot">&lt;-</span> surv[[i]]<span class="sc">$</span>S[[<span class="dv">1</span>]]</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  times[[i]] <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(p_fns, <span class="sc">~</span> <span class="fu">do.call</span>(.x, <span class="fu">list</span>(simdat, <span class="st">"S"</span>)))</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]      Inf 5.041096 2.509589</code></pre>
+<p>Finally, we can plot the results, including the Kaplan-Meier estimates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="do">## ggplot2 default colours</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">hue_pal</span>()(<span class="dv">6</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>km_dat <span class="ot">&lt;-</span> mle<span class="sc">$</span>misc<span class="sc">$</span>km</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>t_km <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(prctile, <span class="sc">~</span><span class="fu">min</span>(km_dat<span class="sc">$</span>time[km_dat<span class="sc">$</span>surv <span class="sc">&lt;</span> .x]))</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(<span class="fu">seq_along</span>(times), <span class="sc">~</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> times[[.x]], <span class="at">col =</span> cols[.x])) <span class="sc">+</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_km, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="medians_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>rate <span class="ot">&lt;-</span> mle<span class="sc">$</span>models<span class="sc">$</span>Exponential<span class="sc">$</span>coefficients</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>meantime <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span>rate</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="do">## plots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We haven’t included the upper and lower bound here because the plot would be too busy but it is trivial to extend the code above to do this.</p>
+<p>Let us create a table of these percentile outputs too.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">do.call</span>(rbind, times))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">cbind</span>(tab, <span class="at">Observed =</span> t_km)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">round</span>(tab, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 16%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">exponential</th>
+<th style="text-align: right;">weibull</th>
+<th style="text-align: right;">gompertz</th>
+<th style="text-align: right;">loglogistic</th>
+<th style="text-align: right;">lognormal</th>
+<th style="text-align: right;">gengamma</th>
+<th style="text-align: right;">Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">97.5</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">0.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">75</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">2.34</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: right;">2.19</td>
+<td style="text-align: right;">2.17</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">1.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50</td>
+<td style="text-align: right;">4.90</td>
+<td style="text-align: right;">4.66</td>
+<td style="text-align: right;">4.80</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">4.66</td>
+<td style="text-align: right;">4.81</td>
+<td style="text-align: right;">4.95</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">25</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.5</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">Inf</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="survival-probabilities-at-given-times" class="level3">
+<h3 class="anchored" data-anchor-id="survival-probabilities-at-given-times">Survival probabilities at given times</h3>
+<p>We can flip the analysis around and instead obtain survival probabilities at user-defined time points.</p>
+<p>The code looks veery similar to the percentile case above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>t_pt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>S_est <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> dist_names) {</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  simdat <span class="ot">&lt;-</span> surv[[i]]<span class="sc">$</span>S[[<span class="dv">1</span>]]</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  S_est[[i]] <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(t_pt, <span class="sc">~</span><span class="fu">min</span>(simdat<span class="sc">$</span>S[simdat<span class="sc">$</span>t <span class="sc">&lt;</span> .x]))</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>km_dat <span class="ot">&lt;-</span> mle<span class="sc">$</span>misc<span class="sc">$</span>km</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>t_km <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(t_pt, <span class="sc">~</span><span class="fu">min</span>(km_dat<span class="sc">$</span>surv[km_dat<span class="sc">$</span>time <span class="sc">&lt;</span> .x]))</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(<span class="fu">seq_along</span>(S_est), <span class="sc">~</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> S_est[[.x]], <span class="at">col =</span> cols[.x])) <span class="sc">+</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> t_pt) <span class="sc">+</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> t_km, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="medians_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let us create a table of these survival probabilities as percentages.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">do.call</span>(rbind, S_est))</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">time =</span> t_pt, tab<span class="sc">*</span><span class="dv">100</span>, <span class="at">Observed =</span> t_km<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">round</span>(tab, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 16%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">time</th>
+<th style="text-align: right;">exponential</th>
+<th style="text-align: right;">weibull</th>
+<th style="text-align: right;">gompertz</th>
+<th style="text-align: right;">loglogistic</th>
+<th style="text-align: right;">lognormal</th>
+<th style="text-align: right;">gengamma</th>
+<th style="text-align: right;">Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">92</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">49</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
