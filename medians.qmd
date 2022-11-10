@@ -345,7 +345,7 @@ library(scales)
 ## ggplot2 default colours
 cols <- hue_pal()(6)
 km_dat <- mle$misc$km
-  
+
 t_km <- purrr::map_dbl(prctile, ~min(km_dat$time[km_dat$surv < .x]))
 
 plot(mle) + 
@@ -401,5 +401,42 @@ tab <- cbind(time = t_pt, tab*100, Observed = t_km*100)
 knitr::kable(round(tab, 0))
 ```
 
+```{r}
+#| code-fold: true
+#| code-summary: "calc_medians() function"
 
+##TODO:
+calc_medians <- function(fit, NSIM = 10) {
+  
+  dist_names <- fit$distns
+  ndist <- length(dist_names)
+  
+  surv <- purrr::map(setNames(1:ndist, dist_names),
+                     ~ make.surv(mle, mod = .x, nsim = NSIM))
+  
+  med_sim <- vector(length = ndist)
+  
+  for (i in dist_names) {
+    simdat <- surv[[i]]$S[[1]]
+    med_sim[i] <- surv_median(simdat, "S")
+  }
+  
+  median_fn <-
+    switch(fit$distn,
+           exp         = function(rate) -log(0.5)/exp(rate),
+           loglogistic = function(alpha) alpha,
+           gompertz    = function(b, eta) (1/b)*log((-1/eta)*log(0.5) + 1),
+           weibull     = function(lambda, k) lambda*(-log(0.5)^(1/k)),
+           lognormal   = function(mu) exp(mu)) 
+  
+  med_direct <- do.call(median_fn, fit$sim)
+  
+  list(med_direct,
+       med_sim)
+}
+
+surv_median <- function(S, sname) {
+  min(S[["t"]][S[[sname]] < 0.5])
+}
+```
 

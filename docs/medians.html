@@ -322,8 +322,8 @@ Tip
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Estimated average survival time distribution* 
-     mean        sd    2.5%   median    97.5%
- 4.517346 0.1119987 4.27808 4.524495 4.725423
+     mean        sd     2.5%   median    97.5%
+ 4.526328 0.1118825 4.306837 4.531487 4.729995
 
 *Computed over the range: [0.02192-7.28493] using 1000 simulations.
 NB: Check that the survival curves tend to 0 over this range!</code></pre>
@@ -441,19 +441,19 @@ t_{50} = -\log (0.5)/\lambda
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rtimes <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span><span class="fu">unlist</span>(sim100<span class="sc">$</span>sim)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rtimes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] 5.030977 4.860997 5.252989 4.518656 4.799633 5.155153 5.058485 5.045317
-  [9] 4.674038 4.590355 5.082505 4.817995 5.004585 4.345927 5.234568 4.935574
- [17] 5.289443 4.937837 5.136835 5.397261 4.991506 4.687472 4.441882 5.297241
- [25] 4.979869 4.921964 5.291105 4.810240 4.932064 4.582963 4.832290 4.782677
- [33] 5.181210 4.676762 4.737412 4.864239 4.748428 4.943325 4.486343 5.128842
- [41] 5.043965 5.019482 5.262224 4.931228 5.050934 5.195667 5.225034 4.822411
- [49] 4.898454 4.915956 4.891791 4.525586 4.322594 4.706158 4.779160 4.541179
- [57] 4.455202 4.608087 4.958289 4.778545 4.941223 4.493003 5.070293 4.827053
- [65] 4.877539 4.613147 4.916051 5.140611 4.687538 4.914277 5.097975 4.678640
- [73] 4.889496 4.663478 4.903244 4.632844 4.085452 4.907163 4.561742 4.876387
- [81] 4.538998 5.104637 5.261416 4.834354 5.296088 4.794037 5.092592 4.717819
- [89] 5.300351 4.884407 4.896563 5.158070 4.990269 4.862905 4.982634 4.404314
- [97] 5.077803 5.287934 5.649222 5.019902</code></pre>
+<pre><code>  [1] 5.019496 4.977925 5.040677 5.030101 5.059512 5.067473 4.960593 5.432788
+  [9] 5.362015 4.941038 4.342166 4.660153 4.659891 4.812559 4.747552 5.004351
+ [17] 4.793469 5.193077 5.201477 4.127722 4.662228 5.220832 4.426929 5.508646
+ [25] 4.928799 5.323873 4.875220 5.128022 5.145417 5.303018 5.023271 4.622442
+ [33] 5.012715 4.878703 5.583430 5.023745 5.006231 5.139021 4.954346 5.317653
+ [41] 4.735700 5.140841 4.960132 5.247957 4.754201 4.992836 5.105168 5.007583
+ [49] 4.382065 4.609377 4.810700 4.889177 4.977576 5.408317 5.105638 4.855109
+ [57] 4.698811 4.605741 5.365495 4.903616 5.025636 4.526071 4.757562 5.132526
+ [65] 4.568781 4.585415 5.113232 4.989097 4.930535 4.784125 4.507536 4.791772
+ [73] 4.779063 4.585982 5.127042 4.845846 5.448710 4.905049 5.003483 4.670255
+ [81] 5.147163 4.931005 5.047509 4.641959 4.623980 5.076626 4.958942 4.497899
+ [89] 5.095520 4.398360 4.782857 4.735575 4.493488 4.565514 5.228715 4.870019
+ [97] 5.045822 4.896110 4.498410 4.311245</code></pre>
 </div>
 </div>
 <p>and simulated estimates</p>
@@ -466,7 +466,7 @@ t_{50} = -\log (0.5)/\lambda
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>t_S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.893151</code></pre>
+<pre><code>[1] 4.90137</code></pre>
 </div>
 </div>
 <p>The plot with all samples of medians is,</p>
@@ -513,34 +513,34 @@ t_{50} = -\log (0.5)/\lambda
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>rtimes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
-  [1] 4.785691 4.773674 4.724659 4.169345 4.872511 4.646455 4.887068 4.809442
-  [9] 4.803092 5.132489 4.947968 4.806153 4.940416 4.788849 4.600579 4.797242
- [17] 4.752358 5.046295 5.056700 4.930276 4.718069 4.754700 4.811955 4.786615
- [25] 4.420308 5.279533 4.965886 5.085997 5.303584 4.781336 4.535886 4.459000
- [33] 4.940053 4.626905 4.994843 5.284709 4.620484 5.249167 5.610395 4.282181
- [41] 4.878309 5.084752 4.971148 4.679309 5.334013 4.789652 4.387141 4.536155
- [49] 5.284586 4.559396 4.392254 5.134116 5.050669 4.557677 5.055830 4.967826
- [57] 4.791461 4.893359 4.651476 4.781939 5.300166 5.219971 5.145551 5.045186
- [65] 5.158304 4.545387 5.596427 4.560900 4.899184 4.923309 4.868401 4.902518
- [73] 4.888902 4.854930 5.358622 5.437532 5.014616 4.865152 5.379231 4.667421
- [81] 4.729015 5.090545 5.113333 4.666649 5.291319 4.920715 4.700209 5.086914
- [89] 5.255839 4.593132 4.697289 4.906682 5.063687 4.543472 5.146893 5.216049
- [97] 5.370036 5.054706 4.988012 4.988741
+  [1] 4.904913 4.933991 5.004022 4.624629 5.302063 5.006858 4.812161 4.616890
+  [9] 4.894848 4.781428 5.191856 5.052430 4.830722 5.006891 5.233578 4.689772
+ [17] 5.444921 4.821118 4.604853 5.218270 4.954131 5.133350 4.836315 5.803944
+ [25] 4.934336 4.870179 4.884393 4.624474 4.650663 4.708646 5.005714 5.600479
+ [33] 4.745149 5.830819 4.957067 4.774610 4.964351 5.271386 5.191127 4.846198
+ [41] 5.160901 5.017303 4.986807 4.898055 4.702716 4.846492 4.957537 4.844318
+ [49] 5.150092 4.530441 4.996794 5.203387 5.303392 5.043222 4.913962 5.478483
+ [57] 5.388386 5.453340 4.622098 5.280943 4.601671 4.963340 4.806216 4.572630
+ [65] 4.634410 5.125731 4.881193 4.860260 4.839871 4.745944 5.020383 4.996206
+ [73] 4.738368 4.419159 5.700552 4.885201 4.595840 5.372853 5.713736 4.719554
+ [81] 5.000018 4.599888 5.131084 5.035878 4.887494 5.072767 4.807541 5.218924
+ [89] 4.678172 5.389019 4.639623 5.099674 4.636864 4.761363 5.287049 5.178298
+ [97] 5.110573 4.610285 5.057809 5.213721
 
 [[2]]
-  [1] 4.686934 4.443468 4.164848 4.787431 4.429112 4.619603 4.885367 4.461403
-  [9] 4.397005 4.052862 4.277117 4.482872 4.223199 4.580381 4.186790 4.486515
- [17] 4.485053 4.717372 4.424844 4.174030 4.793633 4.615457 4.260316 4.568796
- [25] 4.433402 4.688994 4.300801 4.525906 4.142817 4.379025 4.405320 4.362275
- [33] 4.609253 4.524031 4.599876 4.576962 4.979010 4.348849 4.237348 4.509658
- [41] 4.280489 5.057910 4.257423 4.463721 4.002849 4.462267 4.325352 5.008261
- [49] 4.711156 4.269269 4.347390 5.009185 4.171342 4.296398 4.027459 4.377073
- [57] 4.911544 4.454419 4.324823 4.923518 4.658023 4.643688 4.704392 4.524859
- [65] 4.387345 4.380771 4.570652 4.540388 4.562887 4.522572 4.751014 4.570938
- [73] 4.427822 4.723791 4.122711 4.555768 4.319784 4.709845 4.121744 4.712118
- [81] 4.779979 4.679062 4.238908 4.491942 4.599347 4.705663 4.280723 4.239860
- [89] 4.499630 4.472964 4.582056 4.567836 4.480996 4.642663 4.564446 4.807256
- [97] 4.065935 4.377016 5.196162 4.504275</code></pre>
+  [1] 4.277014 4.566690 4.401570 4.064939 4.591983 4.481928 4.763923 4.908186
+  [9] 4.219962 5.065799 4.704995 4.575944 4.461993 4.428678 4.553904 4.441652
+ [17] 4.661240 4.359550 4.287016 4.323200 4.438166 4.697076 4.277220 4.381258
+ [25] 4.370376 4.764005 4.597175 4.899001 4.503487 4.184343 4.359010 4.571090
+ [33] 4.501373 4.718644 4.264050 4.653218 4.406219 4.261150 4.697457 4.259330
+ [41] 4.265426 4.581331 4.684184 4.197287 4.178917 4.556705 5.002253 4.394140
+ [49] 4.491093 4.787737 4.356263 4.946108 5.165638 4.290607 4.682076 4.284438
+ [57] 4.445411 4.729226 4.539397 4.183968 4.490461 4.394591 4.667622 4.302596
+ [65] 4.084217 4.822514 4.517111 4.529884 4.500607 4.657492 4.204231 4.161406
+ [73] 4.250343 4.420957 4.924799 4.708339 4.258627 4.236294 4.858222 4.564900
+ [81] 4.448974 4.748991 4.220136 4.543057 4.440298 4.472032 4.290453 4.133338
+ [89] 4.536366 4.528996 4.601160 4.922568 4.548467 4.425991 4.453091 4.652182
+ [97] 4.884402 4.529802 4.763379 4.551233</code></pre>
 </div>
 </div>
 <p>and the sampled estimates,</p>
@@ -606,32 +606,32 @@ t_p = \frac{1}{2} \left( \min\{t:1−\hat{S}(t) ≥ p\} + \max\{t:1−\hat{S}(t)
 <pre><code>$`97.5`
 function(S, sname)
     min(S[["t"]][S[[sname]] &lt; p])
-&lt;bytecode: 0x00000252edba80c8&gt;
-&lt;environment: 0x00000252edf48270&gt;
+&lt;bytecode: 0x000001d0a04b8bb0&gt;
+&lt;environment: 0x000001d0a077e9d0&gt;
 
 $`75`
 function(S, sname)
     min(S[["t"]][S[[sname]] &lt; p])
-&lt;bytecode: 0x00000252edba80c8&gt;
-&lt;environment: 0x00000252edb7e6f0&gt;
+&lt;bytecode: 0x000001d0a04b8bb0&gt;
+&lt;environment: 0x000001d0a04b2678&gt;
 
 $`50`
 function(S, sname)
     min(S[["t"]][S[[sname]] &lt; p])
-&lt;bytecode: 0x00000252edba80c8&gt;
-&lt;environment: 0x00000252edb7e9c8&gt;
+&lt;bytecode: 0x000001d0a04b8bb0&gt;
+&lt;environment: 0x000001d0a04b2950&gt;
 
 $`25`
 function(S, sname)
     min(S[["t"]][S[[sname]] &lt; p])
-&lt;bytecode: 0x00000252edba80c8&gt;
-&lt;environment: 0x00000252edb7eca0&gt;
+&lt;bytecode: 0x000001d0a04b8bb0&gt;
+&lt;environment: 0x000001d0a04b2c60&gt;
 
 $`2.5`
 function(S, sname)
     min(S[["t"]][S[[sname]] &lt; p])
-&lt;bytecode: 0x00000252edba80c8&gt;
-&lt;environment: 0x00000252edb7ef78&gt;</code></pre>
+&lt;bytecode: 0x000001d0a04b8bb0&gt;
+&lt;environment: 0x000001d0a04b2f38&gt;</code></pre>
 </div>
 </div>
 <p>Equivalent to what we did with just the median function we can do the same with the list of percentile functions.</p>
@@ -689,7 +689,7 @@ function(S, sname)
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="do">## ggplot2 default colours</span></span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">hue_pal</span>()(<span class="dv">6</span>)</span>
 <span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>km_dat <span class="ot">&lt;-</span> mle<span class="sc">$</span>misc<span class="sc">$</span>km</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>t_km <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(prctile, <span class="sc">~</span><span class="fu">min</span>(km_dat<span class="sc">$</span>time[km_dat<span class="sc">$</span>surv <span class="sc">&lt;</span> .x]))</span>
 <span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mle) <span class="sc">+</span> </span>
@@ -737,7 +737,7 @@ function(S, sname)
 <td style="text-align: right;">0.41</td>
 <td style="text-align: right;">0.27</td>
 <td style="text-align: right;">0.44</td>
-<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.52</td>
 <td style="text-align: right;">0.58</td>
 <td style="text-align: right;">0.56</td>
 </tr>
@@ -745,20 +745,20 @@ function(S, sname)
 <td style="text-align: left;">75</td>
 <td style="text-align: right;">2.03</td>
 <td style="text-align: right;">2.34</td>
-<td style="text-align: right;">2.18</td>
-<td style="text-align: right;">2.19</td>
 <td style="text-align: right;">2.17</td>
+<td style="text-align: right;">2.19</td>
+<td style="text-align: right;">2.18</td>
 <td style="text-align: right;">2.03</td>
 <td style="text-align: right;">1.99</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">50</td>
-<td style="text-align: right;">4.90</td>
+<td style="text-align: right;">4.89</td>
 <td style="text-align: right;">4.66</td>
 <td style="text-align: right;">4.80</td>
 <td style="text-align: right;">4.50</td>
-<td style="text-align: right;">4.66</td>
-<td style="text-align: right;">4.81</td>
+<td style="text-align: right;">4.60</td>
+<td style="text-align: right;">4.75</td>
 <td style="text-align: right;">4.95</td>
 </tr>
 <tr class="even">
@@ -849,7 +849,7 @@ function(S, sname)
 <td style="text-align: right;">91</td>
 <td style="text-align: right;">88</td>
 <td style="text-align: right;">91</td>
-<td style="text-align: right;">91</td>
+<td style="text-align: right;">92</td>
 <td style="text-align: right;">91</td>
 <td style="text-align: right;">92</td>
 </tr>
@@ -876,6 +876,44 @@ function(S, sname)
 </tbody>
 </table>
 </div>
+</div>
+<div class="cell">
+<details>
+<summary>calc_medians() function</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="do">##TODO:</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>calc_medians <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, <span class="at">NSIM =</span> <span class="dv">10</span>) {</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  dist_names <span class="ot">&lt;-</span> fit<span class="sc">$</span>distns</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  ndist <span class="ot">&lt;-</span> <span class="fu">length</span>(dist_names)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  surv <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>ndist, dist_names),</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>                     <span class="sc">~</span> <span class="fu">make.surv</span>(mle, <span class="at">mod =</span> .x, <span class="at">nsim =</span> NSIM))</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  med_sim <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">length =</span> ndist)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> dist_names) {</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    simdat <span class="ot">&lt;-</span> surv[[i]]<span class="sc">$</span>S[[<span class="dv">1</span>]]</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    med_sim[i] <span class="ot">&lt;-</span> <span class="fu">surv_median</span>(simdat, <span class="st">"S"</span>)</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>  median_fn <span class="ot">&lt;-</span></span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span>(fit<span class="sc">$</span>distn,</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">exp         =</span> <span class="cf">function</span>(rate) <span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">/</span><span class="fu">exp</span>(rate),</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">loglogistic =</span> <span class="cf">function</span>(alpha) alpha,</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>           <span class="at">gompertz    =</span> <span class="cf">function</span>(b, eta) (<span class="dv">1</span><span class="sc">/</span>b)<span class="sc">*</span><span class="fu">log</span>((<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>eta)<span class="sc">*</span><span class="fu">log</span>(<span class="fl">0.5</span>) <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>           <span class="at">weibull     =</span> <span class="cf">function</span>(lambda, k) lambda<span class="sc">*</span>(<span class="sc">-</span><span class="fu">log</span>(<span class="fl">0.5</span>)<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span>k)),</span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">lognormal   =</span> <span class="cf">function</span>(mu) <span class="fu">exp</span>(mu)) </span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>  med_direct <span class="ot">&lt;-</span> <span class="fu">do.call</span>(median_fn, fit<span class="sc">$</span>sim)</span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(med_direct,</span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>       med_sim)</span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>surv_median <span class="ot">&lt;-</span> <span class="cf">function</span>(S, sname) {</span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(S[[<span class="st">"t"</span>]][S[[sname]] <span class="sc">&lt;</span> <span class="fl">0.5</span>])</span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 
 
