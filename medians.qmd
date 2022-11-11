@@ -394,7 +394,7 @@ knitr::kable(round(tab, 0))
 ##TODO:
 ## 
 calc_medians <- function(fit, NSIM = 10) {
-  browser()
+  
   dist_names <- names(fit$models)
   ndist <- length(dist_names)
   
@@ -402,36 +402,33 @@ calc_medians <- function(fit, NSIM = 10) {
                      ~ make.surv(mle, mod = .x, nsim = NSIM))
   
   med_sim <- list()
+  med_direct <- list()
   
   for (i in dist_names) {
     simdat <- surv[[i]]$S[[1]]
     med_sim[[i]] <- c(median = surv_median(simdat, "S"),
                       upp = surv_median(simdat, "upp"),
                       low = surv_median(simdat, "low"))
-  }
-  
-  median_fn <- function(x) {
-    switch(x,
-           "Exponential"   = function(rate) -log(0.5)/rate,
-           "log-Logistic"  = function(shape, scale) scale,
-           "Gompertz"      = function(shape, rate) (1/rate)*log((-1/exp(shape))*log(0.5) + 1),
-           "Weibull (AFT)" = function(shape, scale) scale*(log(2)^(1/shape)),
-           "log-Normal"    = function(meanlog, sdlog) exp(meanlog),
-           "Gen. Gamma"    = function(...) NA)
-  }
-
-  med_direct <- list() 
-  
-  ##TODO: mean, upper and lower and/or all samples?
-  for (i in dist_names) {
-    params <- sample_params(model = fit$models[[i]])
-  
+    
+    params <- sample_params(fit$models[[i]])
+    
+    ##TODO: mean, upper and lower and/or all samples?
     # median_fn <- fit$models$Exponential$dfns$q(0.5, alpha = para_sample, lower.tail = FALSE)
     med_direct[[i]] <- purrr::map_dbl(params, ~ do.call(median_fn(i), as.list(.x)))
   }
   
   list(med_direct,
        med_sim)
+}
+
+median_fn <- function(x) {
+  switch(x,
+         "Exponential"   = function(rate) -log(0.5)/rate,
+         "log-Logistic"  = function(shape, scale) scale,
+         "Gompertz"      = function(shape, rate) (1/rate)*log((-1/exp(shape))*log(0.5) + 1),
+         "Weibull (AFT)" = function(shape, scale) scale*(log(2)^(1/shape)),
+         "log-Normal"    = function(meanlog, sdlog) exp(meanlog),
+         "Gen. Gamma"    = function(...) NA)
 }
 
 surv_median <- function(S, sname) {
