@@ -419,15 +419,19 @@ calc_medians <- function(fit, NSIM = 10) {
            "lnorm"    = function(mu) exp(mu)) 
   }
   
-  # flexsurv
-  sboot <- normboot.flexsurvreg(fit$models[[1]], B = NSIM)
-  boot_ls <- asplit(xx, 1)
-  
-  # hcm
-  rstan::extract(mle$models[[1]])
-  
-  med_direct <- purrr::map(fit$models, ~ median_fn(.x$dlist$name)(boot_ls))
-  # fit$models$Exponential$dfns$q(0.5, alpha = .x$dfns$coefficients, lower.tail = FALSE)
+  for (i in dist_names) {
+    # flexsurv
+    sboot <- normboot.flexsurvreg(fit$models[[i]], B = NSIM)
+    para_sample <- asplit(xx, 1)
+    
+    # stan/hcm
+    para_sample <- rstan::extract(fit$models[[i]])
+    
+    ## mean, upper and lower and/or all samples?
+    
+    # median_fn <- fit$models$Exponential$dfns$q(0.5, alpha = para_sample, lower.tail = FALSE)
+    med_direct[[i]] <- purrr::map_dbl(para_sample, do.call(median_fn(i), .x))
+  }
   
   list(med_direct,
        med_sim)
