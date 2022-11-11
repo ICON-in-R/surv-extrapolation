@@ -401,36 +401,33 @@ calc_medians <- function(fit, NSIM = 10) {
   surv <- purrr::map(setNames(1:ndist, dist_names),
                      ~ make.surv(mle, mod = .x, nsim = NSIM))
   
-  med_sim <- vector(length = ndist)
+  med_sim <- list()
   
   for (i in dist_names) {
     simdat <- surv[[i]]$S[[1]]
-    med_sim[i] <- surv_median(simdat, "S")
-    upp_sim[i] <- surv_median(simdat, "upp")
-    low_sim[i] <- surv_median(simdat, "low")
+    med_sim[[i]] <- c(median = surv_median(simdat, "S"),
+                      upp = surv_median(simdat, "upp"),
+                      low = surv_median(simdat, "low"))
   }
   
   median_fn <- function(x) {
     switch(x,
-           "exp"   = function(rate) -log(0.5)/exp(rate),
-           "llogis"  = function(alpha) alpha,
-           "gompertz"      = function(b, eta) (1/b)*log((-1/eta)*log(0.5) + 1),
-           "weibull.quiet" = function(lambda, k) lambda*(-log(0.5)^(1/k)),
-           "lnorm"    = function(mu) exp(mu)) 
+           "Exponential"   = function(rate) -log(0.5)/rate,
+           "log-Logistic"  = function(shape, scale) scale,
+           "Gompertz"      = function(shape, rate) (1/rate)*log((-1/exp(shape))*log(0.5) + 1),
+           "Weibull (AFT)" = function(shape, scale) scale*(log(2)^(1/shape)),
+           "log-Normal"    = function(meanlog, sdlog) exp(meanlog),
+           "Gen. Gamma"    = function(...) NA)
   }
+
+  med_direct <- list() 
   
+  ##TODO: mean, upper and lower and/or all samples?
   for (i in dist_names) {
-    # flexsurv
-    sboot <- normboot.flexsurvreg(fit$models[[i]], B = NSIM)
-    para_sample <- asplit(xx, 1)
-    
-    # stan/hcm
-    para_sample <- rstan::extract(fit$models[[i]])
-    
-    ## mean, upper and lower and/or all samples?
-    
+    params <- sample_params(model = fit$models[[i]])
+  
     # median_fn <- fit$models$Exponential$dfns$q(0.5, alpha = para_sample, lower.tail = FALSE)
-    med_direct[[i]] <- purrr::map_dbl(para_sample, do.call(median_fn(i), .x))
+    med_direct[[i]] <- purrr::map_dbl(params, ~ do.call(median_fn(i), as.list(.x)))
   }
   
   list(med_direct,
@@ -439,6 +436,19 @@ calc_medians <- function(fit, NSIM = 10) {
 
 surv_median <- function(S, sname) {
   min(S[["t"]][S[[sname]] < 0.5])
+}
+
+sample_params <- function(fit, ...) {
+  UseMethod("sample_params")
+}
+
+sample_params.flexsurvreg <- function(model, nsim = 10) {
+  sboot <- normboot.flexsurvreg(model, B = nsim)
+  asplit(sboot, 1)
+}
+
+sample_params.stan <- function() {
+  rstan::extract(model)
 }
 
 calc_medians(mle)
