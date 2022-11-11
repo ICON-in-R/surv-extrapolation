@@ -398,14 +398,14 @@ calc_medians <- function(fit, NSIM = 10) {
   dist_names <- names(fit$models)
   ndist <- length(dist_names)
   
-  surv <- purrr::map(setNames(1:ndist, dist_names),
-                     ~ make.surv(mle, mod = .x, nsim = NSIM))
-  
   med_sim <- list()
   med_direct <- list()
+  surv <- list()
   
   for (i in dist_names) {
+    surv[[i]] <- make.surv(fit, mod = which(i == dist_names), nsim = NSIM)
     simdat <- surv[[i]]$S[[1]]
+    
     med_sim[[i]] <- c(median = surv_median(simdat, "S"),
                       upp = surv_median(simdat, "upp"),
                       low = surv_median(simdat, "low"))
