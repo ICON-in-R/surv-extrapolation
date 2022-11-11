@@ -392,6 +392,7 @@ knitr::kable(round(tab, 0))
 #| code-summary: "calc_medians() function"
 
 ##TODO:
+## 
 calc_medians <- function(fit, NSIM = 10) {
   browser()
   dist_names <- names(fit$models)
@@ -405,6 +406,8 @@ calc_medians <- function(fit, NSIM = 10) {
   for (i in dist_names) {
     simdat <- surv[[i]]$S[[1]]
     med_sim[i] <- surv_median(simdat, "S")
+    upp_sim[i] <- surv_median(simdat, "upp")
+    low_sim[i] <- surv_median(simdat, "low")
   }
   
   median_fn <- function(x) {
@@ -416,7 +419,14 @@ calc_medians <- function(fit, NSIM = 10) {
            "lnorm"    = function(mu) exp(mu)) 
   }
   
-  med_direct <- purrr::map(fit$models, ~ median_fn(.x$dlist$name)(.x$dfns$coefficients))
+  # flexsurv
+  sboot <- normboot.flexsurvreg(fit$models[[1]], B = NSIM)
+  boot_ls <- asplit(xx, 1)
+  
+  # hcm
+  rstan::extract(mle$models[[1]])
+  
+  med_direct <- purrr::map(fit$models, ~ median_fn(.x$dlist$name)(boot_ls))
   # fit$models$Exponential$dfns$q(0.5, alpha = .x$dfns$coefficients, lower.tail = FALSE)
   
   list(med_direct,
