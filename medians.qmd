@@ -413,7 +413,9 @@ calc_medians <- function(fit, NSIM = 10) {
     params <- sample_params(fit$models[[i]])
     
     ##TODO: mean, upper and lower and/or all samples?
-    # median_fn <- fit$models$Exponential$dfns$q(0.5, alpha = para_sample, lower.tail = FALSE)
+    # median_fn <- fit$models[[i]]$dfns$q
+    # med_args <- c(p = 0.5, lower.tail = FALSE)
+    # med_direct[[i]] <- purrr::map(params, ~ do.call(median_fn, c(med_args, as.list(.x))))
     med_direct[[i]] <- purrr::map_dbl(params, ~ do.call(median_fn(i), as.list(.x)))
   }
   
