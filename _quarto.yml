@@ -15,8 +15,8 @@ website:
     contents:
       - section: "Basics"
         contents:
-          - Introduction.qmd
-          - intro-to-R.qmd
+          - introduction.qmd
+          - distributions.qmd
       - section: "Assessing the suitability of survival models"
         contents:
           - basic-visual-inspection.qmd
