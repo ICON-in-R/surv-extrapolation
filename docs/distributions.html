@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Survival curve extrapolation - Introduction</title>
+<title>Survival curve extrapolation - Parametric survival distributions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Introduction</h1>
+      <h1 class="quarto-secondary-nav-title">Parametric survival distributions</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -98,14 +98,12 @@ ul.task-list{list-style: none;}
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Introduction.html" class="sidebar-item-text sidebar-link active">Introduction</a>
+  <a href="./Introduction.html" class="sidebar-item-text sidebar-link">Introduction</a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">Introduction to R</a>
-  </div>
-</li>
+  intro-to-R.qmd
+  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -188,14 +186,25 @@ ul.task-list{list-style: none;}
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#exponential" id="toc-exponential" class="nav-link active" data-scroll-target="#exponential">Exponential</a></li>
+  <li><a href="#weibull" id="toc-weibull" class="nav-link" data-scroll-target="#weibull">Weibull</a></li>
+  <li><a href="#gompertz" id="toc-gompertz" class="nav-link" data-scroll-target="#gompertz">Gompertz</a></li>
+  <li><a href="#log-logistic" id="toc-log-logistic" class="nav-link" data-scroll-target="#log-logistic">Log-Logistic</a></li>
+  <li><a href="#log-normal" id="toc-log-normal" class="nav-link" data-scroll-target="#log-normal">Log normal</a></li>
+  <li><a href="#generalised-gamma" id="toc-generalised-gamma" class="nav-link" data-scroll-target="#generalised-gamma">Generalised Gamma</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/n8thangreen/edit/main/distributions.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/n8thangreen/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Introduction</h1>
+<h1 class="title d-none d-lg-block">Parametric survival distributions</h1>
 </div>
 
 
@@ -209,15 +218,34 @@ ul.task-list{list-style: none;}
 
 </header>
 
-<!-- lifted from the RHTA survival analysis chapter -->
-<p>In health economic evaluations, the choice of intervention typically has consequences for lifetime survival. Therefore we often want to estimate the <em>expected survival</em> over a lifetime horizon,</p>
+<p>About this site</p>
+<p>There are a wide range of parametric models available, and each have their own characteristics which make them suitable for different data sets. Exponential, Weibull, Gompertz, log-logistic, log normal and Generalised Gamma parametric models should all be considered. These models, and methods to assess which of these models are suitable for particular data sets are described below. Further details on the properties of the individual parametric models that should be considered can be found in Collet (2003), including diagrams of hazard, survivor and probability density functions which show the variety of shapes that the different models can take, depending upon their parameters. The hazard function is the event rate at time t conditional upon survival until time <span class="math inline">\(t\)</span>. The survivor function is the probability that the survival time is greater than or equal to time <span class="math inline">\(t\)</span> and is equivalent to 1????? where ???? is the probability density function, representing the probability that the survival time is less than <span class="math inline">\(t\)</span>.</p>
+<section id="exponential" class="level2">
+<h2 class="anchored" data-anchor-id="exponential">Exponential</h2>
 <p><span class="math display">\[
-\mbox{E}[T \mid \boldsymbol{\theta}]= \int_0^\infty S(t)dt.
+h(t) = \lambda
 \]</span></p>
-<p>This implies that the expected (i.e.&nbsp;mean) survival time can be computed as the “area under the survival curve”. More importantly, this clarifies why applications of survival modelling in HTA requires a full <em>extrapolation</em> of the survival curve: the focus of the economic analysis is on the mean survival time and in order to obtain it, we need to be able to derive the full survival curve in the range of times <span class="math inline">\(t = 0, \ldots, \infty\)</span>.</p>
-<p>A challenge with estimating lifetime survival based on trial data is that we can only observe death times <span class="math inline">\(T\)</span> that are shorter than the follow-up time of the trial. For people still alive at the end of the trial, the survival times are right-censored. To estimate <span class="math inline">\(E(T)\)</span>, we need to know the distribution of <span class="math inline">\(T\)</span> over all plausible values of <span class="math inline">\(T\)</span>.</p>
+<p><span class="math display">\[
+S(t) = \exp \left(- \int \lambda \;\mbox{d}t \right) = e^{-\lambda t}
+\]</span></p>
+</section>
+<section id="weibull" class="level2">
+<h2 class="anchored" data-anchor-id="weibull">Weibull</h2>
+</section>
+<section id="gompertz" class="level2">
+<h2 class="anchored" data-anchor-id="gompertz">Gompertz</h2>
+</section>
+<section id="log-logistic" class="level2">
+<h2 class="anchored" data-anchor-id="log-logistic">Log-Logistic</h2>
+</section>
+<section id="log-normal" class="level2">
+<h2 class="anchored" data-anchor-id="log-normal">Log normal</h2>
+</section>
+<section id="generalised-gamma" class="level2">
+<h2 class="anchored" data-anchor-id="generalised-gamma">Generalised Gamma</h2>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

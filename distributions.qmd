@@ -1,0 +1,80 @@
+---
+title: "Parametric survival distributions"
+bibliography: references.bib
+format:
+  html:
+    code-copy: true
+editor_options: 
+  chunk_output_type: console
+---
+
+## Introduction
+
+There are a wide range of parametric models available, and each have their own characteristics which make them suitable for different data sets. Exponential, Weibull, Gompertz, log-logistic, log normal and Generalised Gamma parametric models should all be considered. These models, and methods to assess which of these models are suitable for particular data sets are described below.
+Further details on the properties of the individual parametric models that should be considered can be found in Collet (2003), including diagrams of hazard, survivor and probability density functions which show the variety of shapes that the different models can take, depending upon their parameters. The hazard function is the event rate at time t conditional upon survival until time $t$. The survivor function is the probability that the survival time is greater than or equal to time $t$ and is equivalent to 1????? where ???? is the probability density function, representing the probability that the survival time is less than $t$.
+
+General properties:
+
+$$
+h(t) = \frac{f(t)}{S(t)}
+$$
+
+$$
+S(t) = 1 - F(t) = \int_t^{\infty} f(t) \; \mbox{d}t
+$$
+
+$$
+H(t) = \int h(t) \; \mbox{d}t
+$$
+
+
+## Exponential
+
+$$
+h(t) = \lambda
+$$
+
+$$
+S(t) = \exp \left(- \int \lambda \;\mbox{d}t \right) = e^{-\lambda t}
+$$
+
+## Weibull
+
+$$
+h(t) = \lambda \gamma t^{\gamma-1}
+$$
+$$
+S(t) = \exp \left( - \int_0^t \lambda \gamma u^{\gamma-1} \; \mbox{d}u \right) = \exp(- \lambda t^{\gamma})
+$$
+
+
+## Gompertz
+
+$$
+h(t) = \lambda e^{\theta t}
+$$
+$$
+S(t) = \exp \left( \frac{\lambda}{\theta} \left(1 - e^{\theta t} \right) \right)
+$$
+
+## Log-Logistic
+
+$$
+h(t) =  \frac{e^{\theta} \kappa t^{\kappa - 1}}{1 + e^{\theta} t^{\kappa}}
+$$
+$$
+S(t) = \left( 1 + e^{\theta} t^{\kappa} \right)^{-1}
+$$
+
+## Log normal
+
+$$
+S(t) = 1 - \Phi\left( \frac{\log t - \mu}{\sigma} \right)
+$$
+
+## Generalised Gamma
+
+$$
+S(t) = 1 - \Gamma_{\lambda t}^{\theta} (\rho)
+$$
+where $\Gamma_{\lambda t} (\rho)$ is the incomplete gamma function.

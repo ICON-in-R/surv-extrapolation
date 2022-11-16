@@ -1,9 +1,0 @@
----
-title: "Introduction to R"
----
-
-About this site
-
-```{r}
-1 + 1
-```

@@ -124,5 +124,54 @@
     "title": "Restricted Means",
     "section": "",
     "text": "library(survRM2)"
+  },
+  {
+    "objectID": "distributions.html",
+    "href": "distributions.html",
+    "title": "Parametric survival distributions",
+    "section": "",
+    "text": "About this site\nThere are a wide range of parametric models available, and each have their own characteristics which make them suitable for different data sets. Exponential, Weibull, Gompertz, log-logistic, log normal and Generalised Gamma parametric models should all be considered. These models, and methods to assess which of these models are suitable for particular data sets are described below. Further details on the properties of the individual parametric models that should be considered can be found in Collet (2003), including diagrams of hazard, survivor and probability density functions which show the variety of shapes that the different models can take, depending upon their parameters. The hazard function is the event rate at time t conditional upon survival until time \\(t\\). The survivor function is the probability that the survival time is greater than or equal to time \\(t\\) and is equivalent to 1????? where ???? is the probability density function, representing the probability that the survival time is less than \\(t\\)."
+  },
+  {
+    "objectID": "distributions.html#exponential",
+    "href": "distributions.html#exponential",
+    "title": "Parametric survival distributions",
+    "section": "Exponential",
+    "text": "Exponential\n\\[\nh(t) = \\lambda\n\\]\n\\[\nS(t) = \\exp \\left(- \\int \\lambda \\;\\mbox{d}t \\right) = e^{-\\lambda t}\n\\]"
+  },
+  {
+    "objectID": "distributions.html#weibull",
+    "href": "distributions.html#weibull",
+    "title": "Parametric survival distributions",
+    "section": "Weibull",
+    "text": "Weibull"
+  },
+  {
+    "objectID": "distributions.html#gompertz",
+    "href": "distributions.html#gompertz",
+    "title": "Parametric survival distributions",
+    "section": "Gompertz",
+    "text": "Gompertz"
+  },
+  {
+    "objectID": "distributions.html#log-logistic",
+    "href": "distributions.html#log-logistic",
+    "title": "Parametric survival distributions",
+    "section": "Log-Logistic",
+    "text": "Log-Logistic"
+  },
+  {
+    "objectID": "distributions.html#log-normal",
+    "href": "distributions.html#log-normal",
+    "title": "Parametric survival distributions",
+    "section": "Log normal",
+    "text": "Log normal"
+  },
+  {
+    "objectID": "distributions.html#generalised-gamma",
+    "href": "distributions.html#generalised-gamma",
+    "title": "Parametric survival distributions",
+    "section": "Generalised Gamma",
+    "text": "Generalised Gamma"
   }
 ]
