@@ -1,9 +1,0 @@
----
-title: "Parametric modelling"
----
-
-About this site
-
-```{r}
-1 + 1
-```
