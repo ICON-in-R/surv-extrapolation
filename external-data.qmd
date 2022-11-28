@@ -1,9 +1,0 @@
----
-title: "External data"
----
-
-About this site
-
-```{r}
-1 + 1
-```

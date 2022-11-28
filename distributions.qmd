@@ -18,13 +18,11 @@ $$
 h(t) = \frac{f(t)}{S(t)}
 $$
 
-The survival (or survivor) curve is
-$$
+The survival (or survivor) curve is $$
 S(t) = 1 - F(t) = \int_t^{\infty} f(t) \; \mbox{d}t
 $$
 
-and the cumulative hazard is given by
-$$
+and the cumulative hazard is given by $$
 H(t) = \int h(t) \; \mbox{d}t
 $$
 
@@ -38,71 +36,54 @@ $$
 h(t) = \lambda
 $$
 
-and this then corresponds to
-$$
+and this then corresponds to $$
 S(t) = \exp \left(- \int \lambda \;\mbox{d}t \right) = e^{-\lambda t}
 $$
 
-In R random samples from the exponential distribution can be obtained using `rexp` e.g. make 10 draws using `rexp(n = 10, rate = 2)`.
-The other functions are `pexp` fore the cumulative distribution, `qexp` is the quantile function and density is `dexp`.
+In R random samples from the exponential distribution can be obtained using `rexp` e.g. make 10 draws using `rexp(n = 10, rate = 2)`. The other functions are `pexp` fore the cumulative distribution, `qexp` is the quantile function and density is `dexp`.
 
 We can easily view a curve as follows.
+
 ```{r}
 curve(dexp(x, rate = 0.5), from=0, to=10, col='blue')
 ```
 
-
 ## Weibull
 
-Hazard
-$$
+Hazard $$
 h(t) = \lambda \gamma t^{\gamma-1}
-$$
-Survival function
-$$
+$$ Survival function $$
 S(t) = \exp \left( - \int_0^t \lambda \gamma u^{\gamma-1} \; \mbox{d}u \right) = \exp(- \lambda t^{\gamma})
 $$
 
 ## Gompertz
 
-Hazard function
-$$
+Hazard function $$
 h(t) = \lambda e^{\theta t}
 $$
 
-Survival functions
-$$
+Survival functions $$
 S(t) = \exp \left( \frac{\lambda}{\theta} \left(1 - e^{\theta t} \right) \right)
 $$
 
-
 ## Log-Logistic
 
-Hazard function
-$$
+Hazard function $$
 h(t) =  \frac{e^{\theta} \kappa t^{\kappa - 1}}{1 + e^{\theta} t^{\kappa}}
 $$
 
-Survival function
-$$
+Survival function $$
 S(t) = \left( 1 + e^{\theta} t^{\kappa} \right)^{-1}
 $$
 
-
 ## Log normal
 
-Survival function
-$$
+Survival function $$
 S(t) = 1 - \Phi\left( \frac{\log t - \mu}{\sigma} \right)
 $$
 
-
 ## Generalised Gamma
 
-Survival function
-$$
+Survival function $$
 S(t) = 1 - \Gamma_{\lambda t}^{\theta} (\rho)
-$$
-where $\Gamma_{\lambda t} (\rho)$ is the incomplete gamma function.
-
-
+$$ where $\Gamma_{\lambda t} (\rho)$ is the incomplete gamma function.

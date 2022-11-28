@@ -8,8 +8,54 @@ editor_options:
   chunk_output_type: console
 ---
 
-Restricted means analysis can be used either for the base case analysis or as a sensitivity analysis. The method as used in the NICE TAs generally involved simply using all the available data to estimate the area under the Kaplan Meier curve up until the final observation, similar to an approach presented in the statistical literature by [@Moeschberger1985]. Generally, a restricted means approach has only been taken when trial data was relatively complete compared to situations where parametric modelling was used.
+## Introdutction
+
+Restricted mean survival time (RMST) analysis can be used either for the base case analysis or as a sensitivity analysis. The method as used in the NICE TAs generally involved simply using all the available data to estimate the area under the Kaplan Meier curve up until the final observation, similar to an approach presented in the statistical literature by [@Moeschberger1985]. Generally, a restricted means approach has only been taken when trial data was relatively complete compared to situations where parametric modelling was used.
+
+$$
+\mu_{\tau} = \mbox{E}[T \mid \boldsymbol{\theta}]= \int_0^{\tau} S(t)dt.
+$$
+
+## Calculation in R
+
+`flexsurv` has some in-built functions to easily calculate RMST. The names of these functions are pre-pended with `rmst_` e.g. `rmst_exp()`.
+
+To see this, let us calculate the RMST for an exponential distribution rate 1 and $t \leq 0.5$.
+
+```{r}
+library(flexsurv)
+
+t <- 0.5
+
+rmst_exp(t, rate = 1, start = 0)
+
+den <- curve(dexp, 0, 5)
+
+polygon(x = c(den$x[den$x <= t], t, 0),
+        y = c(den$y[den$x <= t], 0, 0),
+        col = "slateblue1",
+        border = 1)
+```
+
+
+## As an alternative to hazard ratio
+
+The `survRM2` package is specifically for comparing restricted means analyses.
 
 ```{r warning=FALSE, message=FALSE}
 library(survRM2)
+
+D <- rmst2.sample.data()
+
+time   <- D$time
+status <- D$status
+arm    <- D$arm
+
+obj <- rmst2(time, status, arm, tau=10)
+
+plot(obj, xlab="Years", ylab="Probability")
 ```
+
+[Royston2013]
+
+Royston, P., Parmar, M.K. Restricted mean survival time: an alternative to the hazard ratio for the design and analysis of randomized trials with a time-to-event outcome. BMC Med Res Methodol 13, 152 (2013). https://doi.org/10.1186/1471-2288-13-152

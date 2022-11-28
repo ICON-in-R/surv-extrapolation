@@ -1,9 +1,0 @@
----
-title: "Basic visual inspection"
----
-
-About this site
-
-```{r}
-1 + 1
-```
