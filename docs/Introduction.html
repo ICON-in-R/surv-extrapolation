@@ -15,6 +15,25 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -103,7 +122,7 @@ ul.task-list{list-style: none;}
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro-to-R.html" class="sidebar-item-text sidebar-link">Introduction to R</a>
+  <a href="./distributions.html" class="sidebar-item-text sidebar-link">Parametric survival distributions</a>
   </div>
 </li>
       </ul>
@@ -118,22 +137,12 @@ ul.task-list{list-style: none;}
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./basic-visual-inspection.html" class="sidebar-item-text sidebar-link">Basic visual inspection</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./assess-transformed-km.html" class="sidebar-item-text sidebar-link">Assessing model assumptions using transformed hazard plots</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./AIC-BIC-tests.html" class="sidebar-item-text sidebar-link">AIC/BIC tests</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./other-methods.html" class="sidebar-item-text sidebar-link">Other methods</a>
   </div>
 </li>
       </ul>
@@ -153,17 +162,7 @@ ul.task-list{list-style: none;}
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">Parametric modelling</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./PH-modelling.html" class="sidebar-item-text sidebar-link">Proportional Hazard Modelling</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./external-data.html" class="sidebar-item-text sidebar-link">External data</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -188,7 +187,13 @@ ul.task-list{list-style: none;}
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#r-packages" id="toc-r-packages" class="nav-link active" data-scroll-target="#r-packages">R packages</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/n8thangreen/edit/main/Introduction.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/n8thangreen/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -216,10 +221,38 @@ ul.task-list{list-style: none;}
 \]</span></p>
 <p>This implies that the expected (i.e.&nbsp;mean) survival time can be computed as the “area under the survival curve”. More importantly, this clarifies why applications of survival modelling in HTA requires a full <em>extrapolation</em> of the survival curve: the focus of the economic analysis is on the mean survival time and in order to obtain it, we need to be able to derive the full survival curve in the range of times <span class="math inline">\(t = 0, \ldots, \infty\)</span>.</p>
 <p>A challenge with estimating lifetime survival based on trial data is that we can only observe death times <span class="math inline">\(T\)</span> that are shorter than the follow-up time of the trial. For people still alive at the end of the trial, the survival times are right-censored. To estimate <span class="math inline">\(E(T)\)</span>, we need to know the distribution of <span class="math inline">\(T\)</span> over all plausible values of <span class="math inline">\(T\)</span>.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Relative values
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The basis of the structure of these pages is take from the NICE DSU report 14 <span class="citation" data-cites="Latimer2011">(<a href="#ref-Latimer2011" role="doc-biblioref">Latimer 2011</a>)</span>.</p>
+</div>
+</div>
+<section id="r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="r-packages">R packages</h2>
+<p>There are many R package available for doing survival analysis, both on CRAN and on other site such as GitHub. Those we will make most use of for the exercises will be</p>
+<ul>
+<li><code>survHE</code>: Survival analysis in health economic evaluation contains a suite of functions to systematise the workflow involving survival analysis in health economic evaluation. survHE can fit a large range of survival models using both a frequentist approach (by calling the R package flexsurv) and a Bayesian perspective.</li>
+<li><code>flexsurv</code>: Flexible parametric models for time-to-event data, including the Royston-Parmar spline model, generalized gamma and generalized F distributions. Any user-defined parametric distribution can be fitted, given at least an R function defining the probability density or hazard. There are also tools for fitting and predicting from fully parametric multi-state models, based on either cause-specific hazards or mixture models.</li>
+<li><code>INLA</code>: R-INLA is a more general package in R that do approximate Bayesian inference for Latent Gaussian Models.</li>
+<li><code>survival</code>: Contains the core survival analysis routines, including definition of Surv objects, Kaplan-Meier and Aalen-Johansen (multi-state) curves, Cox models, and parametric accelerated failure time models.</li>
+</ul>
 
 
 
-</main> <!-- /main -->
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Latimer2011" class="csl-entry" role="doc-biblioentry">
+Latimer, Nicholas. 2011. <span>“<span class="nocase">NICE DSU technical support document 14: survival analysis for economic evaluations alongside clinical trials-extrapolation with patient-level data</span>.”</span> <em>Sheff. Rep. By Decis. Support Unit</em>, no. 0. <a href="http://www.nicedsu.org.uk/NICE DSU TSD Survival analysis.updated March 2013.v2.pdf">http://www.nicedsu.org.uk/NICE DSU TSD Survival analysis.updated March 2013.v2.pdf</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

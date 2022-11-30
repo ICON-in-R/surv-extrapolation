@@ -15,6 +15,88 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -102,8 +184,10 @@ ul.task-list{list-style: none;}
   </div>
 </li>
           <li class="sidebar-item">
-  intro-to-R.qmd
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="./distributions.html" class="sidebar-item-text sidebar-link active">Parametric survival distributions</a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -116,22 +200,12 @@ ul.task-list{list-style: none;}
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./basic-visual-inspection.html" class="sidebar-item-text sidebar-link">Basic visual inspection</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./assess-transformed-km.html" class="sidebar-item-text sidebar-link">Assessing model assumptions using transformed hazard plots</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./AIC-BIC-tests.html" class="sidebar-item-text sidebar-link">AIC/BIC tests</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./other-methods.html" class="sidebar-item-text sidebar-link">Other methods</a>
   </div>
 </li>
       </ul>
@@ -151,17 +225,7 @@ ul.task-list{list-style: none;}
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parametric-modelling.html" class="sidebar-item-text sidebar-link">Parametric modelling</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./PH-modelling.html" class="sidebar-item-text sidebar-link">Proportional Hazard Modelling</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./external-data.html" class="sidebar-item-text sidebar-link">External data</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -190,7 +254,8 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#exponential" id="toc-exponential" class="nav-link active" data-scroll-target="#exponential">Exponential</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#exponential" id="toc-exponential" class="nav-link" data-scroll-target="#exponential">Exponential</a></li>
   <li><a href="#weibull" id="toc-weibull" class="nav-link" data-scroll-target="#weibull">Weibull</a></li>
   <li><a href="#gompertz" id="toc-gompertz" class="nav-link" data-scroll-target="#gompertz">Gompertz</a></li>
   <li><a href="#log-logistic" id="toc-log-logistic" class="nav-link" data-scroll-target="#log-logistic">Log-Logistic</a></li>
@@ -218,36 +283,131 @@ ul.task-list{list-style: none;}
 
 </header>
 
-<p>About this site</p>
-<p>There are a wide range of parametric models available, and each have their own characteristics which make them suitable for different data sets. Exponential, Weibull, Gompertz, log-logistic, log normal and Generalised Gamma parametric models should all be considered. These models, and methods to assess which of these models are suitable for particular data sets are described below. Further details on the properties of the individual parametric models that should be considered can be found in Collet (2003), including diagrams of hazard, survivor and probability density functions which show the variety of shapes that the different models can take, depending upon their parameters. The hazard function is the event rate at time t conditional upon survival until time <span class="math inline">\(t\)</span>. The survivor function is the probability that the survival time is greater than or equal to time <span class="math inline">\(t\)</span> and is equivalent to 1????? where ???? is the probability density function, representing the probability that the survival time is less than <span class="math inline">\(t\)</span>.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>There are a wide range of parametric models available, and each have their own characteristics which make them suitable for different data sets. Exponential, Weibull, Gompertz, log-logistic, log normal and Generalised Gamma parametric models should all be considered. These models, and methods to assess which of these models are suitable for particular data sets are described below. Further details on the properties of the individual parametric models that should be considered can be found in <span class="citation" data-cites="Collett2013">(<a href="#ref-Collett2013" role="doc-biblioref">Collett 2013</a>)</span>, including diagrams of hazard, survivor and probability density functions which show the variety of shapes that the different models can take, depending upon their parameters. The hazard function is the event rate at time t conditional upon survival until time <span class="math inline">\(t\)</span>. The survivor function is the probability that the survival time is greater than or equal to time <span class="math inline">\(t\)</span>.</p>
+<p>General equations for survival analysis are the following. The hazard is given by</p>
+<p><span class="math display">\[
+h(t) = \frac{f(t)}{S(t)}
+\]</span></p>
+<p>The survival (or survivor) curve is</p>
+<p><span class="math display">\[
+S(t) = 1 - F(t) = \int_t^{\infty} f(t) \; \mbox{d}t
+\]</span></p>
+<p>and the cumulative hazard is given by</p>
+<p><span class="math display">\[
+H(t) = \int h(t) \; \mbox{d}t
+\]</span></p>
+<p>where <span class="math inline">\(f(t)\)</span> is the density function, and <span class="math inline">\(F(t)\)</span> is the cumulative distribution function.</p>
+<p>We now introduce the separate functions for the most common distributions.</p>
+</section>
 <section id="exponential" class="level2">
 <h2 class="anchored" data-anchor-id="exponential">Exponential</h2>
+<p>The hazard is constant i.e.</p>
 <p><span class="math display">\[
 h(t) = \lambda
 \]</span></p>
+<p>and this then corresponds to</p>
 <p><span class="math display">\[
 S(t) = \exp \left(- \int \lambda \;\mbox{d}t \right) = e^{-\lambda t}
 \]</span></p>
+<p>In R random samples from the exponential distribution can be obtained using <code>rexp</code> e.g.&nbsp;make 10 draws using <code>rexp(n = 10, rate = 2)</code>. The other functions are <code>pexp</code> fore the cumulative distribution, <code>qexp</code> is the quantile function and density is <code>dexp</code>.</p>
+<p>We can easily view a curve as follows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dexp</span>(x, <span class="at">rate =</span> <span class="fl">0.5</span>), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="distributions_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For the following we will also give an example density plot. Where there is a base R function available to do this we will use this. If not the we will use the equivalent functions from the <code>flexsurv</code> package.</p>
 </section>
 <section id="weibull" class="level2">
 <h2 class="anchored" data-anchor-id="weibull">Weibull</h2>
+<p>Hazard</p>
+<p><span class="math display">\[
+h(t) = \lambda \gamma t^{\gamma-1}
+\]</span></p>
+<p>Survival function</p>
+<p><span class="math display">\[
+S(t) = \exp \left( - \int_0^t \lambda \gamma u^{\gamma-1} \; \mbox{d}u \right) = \exp(- \lambda t^{\gamma})
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dweibull</span>(x, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">scale =</span> <span class="dv">4</span>), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="distributions_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="gompertz" class="level2">
 <h2 class="anchored" data-anchor-id="gompertz">Gompertz</h2>
+<p>Hazard function</p>
+<p><span class="math display">\[
+h(t) = \lambda e^{\theta t}
+\]</span></p>
+<p>Survival functions</p>
+<p><span class="math display">\[
+S(t) = \exp \left( \frac{\lambda}{\theta} \left(1 - e^{\theta t} \right) \right)
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(flexsurv<span class="sc">::</span><span class="fu">dgompertz</span>(x, <span class="at">shape =</span> <span class="fl">0.3</span>, <span class="at">rate =</span> <span class="fl">0.25</span>), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="distributions_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="log-logistic" class="level2">
 <h2 class="anchored" data-anchor-id="log-logistic">Log-Logistic</h2>
+<p>Hazard function</p>
+<p><span class="math display">\[
+h(t) =  \frac{e^{\theta} \kappa t^{\kappa - 1}}{1 + e^{\theta} t^{\kappa}}
+\]</span></p>
+<p>Survival function</p>
+<p><span class="math display">\[
+S(t) = \left( 1 + e^{\theta} t^{\kappa} \right)^{-1}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(flexsurv<span class="sc">::</span><span class="fu">dllogis</span>(x, <span class="at">shape =</span> <span class="dv">3</span>, <span class="at">log =</span> <span class="cn">TRUE</span>), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="distributions_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="log-normal" class="level2">
 <h2 class="anchored" data-anchor-id="log-normal">Log normal</h2>
+<p>Survival function</p>
+<p><span class="math display">\[
+S(t) = 1 - \Phi\left( \frac{\log t - \mu}{\sigma} \right)
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dlnorm</span>(x, <span class="at">meanlog =</span> <span class="dv">2</span>, <span class="at">sdlog =</span> <span class="fl">0.5</span>), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="distributions_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="generalised-gamma" class="level2">
 <h2 class="anchored" data-anchor-id="generalised-gamma">Generalised Gamma</h2>
+<p>Survival function</p>
+<p><span class="math display">\[
+S(t) = 1 - \Gamma_{\lambda t}^{\theta} (\rho)
+\]</span></p>
+<p>where <span class="math inline">\(\Gamma_{\lambda t} (\rho)\)</span> is the incomplete gamma function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(flexsurv<span class="sc">::</span><span class="fu">dgengamma</span>(x, <span class="at">mu =</span> <span class="dv">5</span>, <span class="at">sigma =</span> <span class="dv">2</span>, <span class="at">Q =</span> <span class="fl">0.1</span>), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="distributions_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
 
 
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Collett2013" class="csl-entry" role="doc-biblioentry">
+Collett, Dave. 2013. <em><span class="nocase">Modelling Survival Data in Medical Research</span></em>. 3rd ed. Chapman; Hall/CRC. https://doi.org/<a href="https://doi.org/10.1201/b18041">https://doi.org/10.1201/b18041</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

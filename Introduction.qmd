@@ -1,5 +1,11 @@
 ---
 title: "Introduction"
+bibliography: references.bib
+format:
+  html:
+    code-copy: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- lifted from the RHTA survival analysis chapter -->
@@ -14,11 +20,17 @@ This implies that the expected (i.e. mean) survival time can be computed as the 
 
 A challenge with estimating lifetime survival based on trial data is that we can only observe death times $T$ that are shorter than the follow-up time of the trial. For people still alive at the end of the trial, the survival times are right-censored. To estimate $E(T)$, we need to know the distribution of $T$ over all plausible values of $T$.
 
+::: callout-tip
+## Relative values
+The basis of the structure of these pages is take from the NICE DSU report 14 [@Latimer2011].
+:::
+
+
 ## R packages
 
 There are many R package available for doing survival analysis, both on CRAN and on other site such as GitHub. Those we will make most use of for the exercises will be
 
--   `survHE`: \_Surv_ival analysis in \_h_ealth \_e_conomic evaluation Contains a suite of functions to systematise the workflow involving survival analysis in health economic evaluation. survHE can fit a large range of survival models using both a frequentist approach (by calling the R package flexsurv) and a Bayesian perspective.
+-   `survHE`: Survival analysis in health economic evaluation contains a suite of functions to systematise the workflow involving survival analysis in health economic evaluation. survHE can fit a large range of survival models using both a frequentist approach (by calling the R package flexsurv) and a Bayesian perspective.
 -   `flexsurv`: Flexible parametric models for time-to-event data, including the Royston-Parmar spline model, generalized gamma and generalized F distributions. Any user-defined parametric distribution can be fitted, given at least an R function defining the probability density or hazard. There are also tools for fitting and predicting from fully parametric multi-state models, based on either cause-specific hazards or mixture models.
 -   `INLA`: R-INLA is a more general package in R that do approximate Bayesian inference for Latent Gaussian Models.
 -   `survival`: Contains the core survival analysis routines, including definition of Surv objects, Kaplan-Meier and Aalen-Johansen (multi-state) curves, Cox models, and parametric accelerated failure time models.

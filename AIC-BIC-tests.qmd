@@ -30,12 +30,11 @@ where
 
 $\hat{L}$ = the maximized value of the likelihood function of the model $M$, i.e. $\hat{L} = p(x \mid \widehat{\theta}, M)$, where $\widehat{\theta}$ are the parameter values that maximize the likelihood function; $x$ = the observed data; $n$ = the number of data points in $x$, the number of observations, or equivalently, the sample size; $k$ = the number of parameters estimated by the model. For example, in multiple linear regression, the estimated parameters are the intercept, the $q$ slope parameters, and the constant variance of the errors; thus, $k = q + 2$.
 
-:::{.callout-warning}
+::: callout-warning
 ## Relative values
 
 IC values only really make sense when compared between one another i.e relatively. The absolute value is not helpful and depends on the specifics of the model and data.
 :::
-
 
 ## R example
 

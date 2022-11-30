@@ -19,16 +19,12 @@ website:
           - distributions.qmd
       - section: "Assessing the suitability of survival models"
         contents:
-          - basic-visual-inspection.qmd
           - assess-transformed-km.qmd
           - AIC-BIC-tests.qmd
-          - other-methods.qmd
       - section: "Methods"
         contents:
           - restricted-means.qmd
-          - parametric-modelling.qmd
           - PH-modelling.qmd
-          - external-data.qmd
           - medians.qmd
           - blended-curves.qmd
           - other-hybrid-methods.qmd

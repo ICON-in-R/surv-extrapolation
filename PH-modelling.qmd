@@ -1,7 +1,71 @@
 ---
 title: "Proportional Hazard Modelling"
+bibliography: references.bib
+format:
+  html:
+    code-copy: true
+editor_options: 
+  chunk_output_type: console
 ---
 
-R package `penalized` for fitting penalised Cox regression models;
+# Introduction
 
-Goeman, J., Meijer, R. and Chaturvedi, N. (2013) L 1 (lasso and fused lasso) and L 2 (ridge) penalized estimation in GLMs and in the Cox model. R package version 0.9-42
+The purpose of the CPH model is to evaluate simultaneously the effect of several factors on survival. It allows us to examine how specified factors influence the rate of a particular event happening at a particular point in time. This rate is commonly referred as the _hazard rate_.
+
+The Cox model is expressed by the hazard function denoted by $h(t)$. The hazard function can be interpreted as the risk of dying at time $t$.
+
+It can be estimated as follow:
+
+$$
+h(t) = h_0(t) \times \exp (\beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p)
+$$
+where
+
+* $h_0$ is the _baseline hazard_ corresponding to the value of the hazard if all of the $x_i$ are equal to zero.
+* Each $\exp(\beta_i)$ are the _hazard ratios_. Id HR < 1the there is a reduction in the hazard and if HR > 1 then there is an increase in the hazard.
+
+
+## Example in R
+
+We will use the standard package `survival` for this and the package `survminer` which has some nice plotting functions.
+
+
+```{r warning=FALSE, message=FALSE}
+library("survival")
+library("survminer")
+```
+
+Load the data
+
+```{r}
+data("lung")
+head(lung)
+```
+
+and compute a univariate Cox model
+
+```{r}
+res.cox <- coxph(Surv(time, status) ~ sex, data = lung)
+summary(res.cox)
+```
+
+For a multivariate Cox model it is a simple extension
+
+```{r}
+res.cox <- coxph(Surv(time, status) ~ age + sex + ph.ecog, data =  lung)
+summary(res.cox)
+```
+
+We can visualise the output as follows.
+
+```{r}
+fit <- survfit(Surv(time, status) ~ sex, data = lung)
+
+# base R
+plot(fit)
+
+# ggplot2
+ggsurvplot(fit, conf.int = TRUE,
+           ggtheme = theme_minimal(), data = lung)
+```
+
