@@ -22,9 +22,9 @@ A challenge with estimating lifetime survival based on trial data is that we can
 
 ::: callout-tip
 ## Relative values
+
 The basis of the structure of these pages is take from the NICE DSU report 14 [@Latimer2011].
 :::
-
 
 ## R packages
 
