@@ -15,7 +15,7 @@ website:
     contents:
       - section: "Basics"
         contents:
-          - introduction.qmd
+          - index.qmd
           - distributions.qmd
       - section: "Assessing the suitability of survival models"
         contents:
