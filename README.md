@@ -1,7 +1,7 @@
-# surv-extrapolation
+# Survival curve extrapolation in R
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The goal of surv-extrapolation is to ...
+Training material
